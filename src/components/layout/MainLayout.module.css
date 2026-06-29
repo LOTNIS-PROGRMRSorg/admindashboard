@@ -1,0 +1,19 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Important for preventing flex children from overflowing */
+  background-color: var(--color-bg-subtle); /* subtle background for main content area to contrast with white cards */
+}
+
+.pageContainer {
+  flex: 1;
+  padding: var(--spacing-6);
+  overflow-y: auto;
+}

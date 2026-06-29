@@ -1,0 +1,53 @@
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboardGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.chartsRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+@media (min-width: 1024px) {
+  .chartsRow {
+    grid-template-columns: 2fr 1fr;
+  }
+  
+  .chartsRowEqual {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.dataRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+@media (min-width: 1024px) {
+  .dataRow {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.chartContainer {
+  height: 350px;
+}
+
+.chartContainerSmall {
+  height: 300px;
+}
+
+/* Loading Overlay */
+.loadingOverlay {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}

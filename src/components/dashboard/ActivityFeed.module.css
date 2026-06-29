@@ -1,0 +1,117 @@
+.card {
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-6);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: var(--spacing-5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-base);
+}
+
+.viewAll {
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.viewAll:hover {
+  text-decoration: underline;
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  position: relative;
+}
+
+.feed::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 15px; /* align with icon center */
+  width: 2px;
+  background-color: var(--color-border);
+  z-index: 0;
+}
+
+.item {
+  display: flex;
+  gap: var(--spacing-4);
+  position: relative;
+  z-index: 1;
+}
+
+.iconWrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--color-bg-surface);
+  border: 2px solid var(--color-border);
+}
+
+.iconWrapper.listing {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background-color: rgba(79, 70, 229, 0.1);
+}
+
+.iconWrapper.booking {
+  color: var(--color-success);
+  border-color: var(--color-success);
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.iconWrapper.approval {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.iconWrapper.cancellation {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.iconWrapper.user {
+  color: var(--color-text-base);
+  border-color: var(--color-text-muted);
+  background-color: var(--color-bg-subtle);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
+}
+
+.text {
+  font-size: 0.875rem;
+  color: var(--color-text-base);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
