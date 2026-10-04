@@ -1,0 +1,123 @@
+.drawerWide {
+  max-width: 560px !important;
+}
+
+.docGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3);
+}
+
+.docCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3);
+  font-size: 0.8125rem;
+}
+
+.docLabel {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-2);
+  display: block;
+}
+
+.docLink {
+  display: inline-block;
+}
+
+.docThumb {
+  width: 100%;
+  max-height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.docMissing {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.reqRow {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+}
+
+.reqHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2);
+}
+
+.reqName {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.reqNote {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  margin: var(--spacing-2) 0;
+}
+
+.reqActions {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.select, .textInput {
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  font-size: 0.8125rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.smallBtn {
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.btnApprove {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: var(--color-success);
+}
+
+.btnReject {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: var(--color-danger);
+}
+
+.statusActions {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+}
+
+.statusBtn {
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  border: 1px solid var(--color-border);
+}
+
+.statusBtnDanger {
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--color-danger);
+}
+
+.errorText {
+  color: var(--color-danger);
+  font-size: 0.8125rem;
+  margin-top: var(--spacing-2);
+}

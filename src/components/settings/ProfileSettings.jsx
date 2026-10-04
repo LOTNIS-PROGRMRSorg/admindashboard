@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './SettingsSection.module.css';
 import FormInput from './FormInput';
 
@@ -10,12 +10,23 @@ export default function ProfileSettings({ profile, onSave }) {
     phone: profile.phone
   });
 
+  // Re-sync the form whenever the real profile arrives (it loads
+  // asynchronously after the initial render) or changes after a save.
+  useEffect(() => {
+    setFormData({
+      name: profile.name,
+      username: profile.username,
+      email: profile.email,
+      phone: profile.phone,
+    });
+  }, [profile.name, profile.username, profile.email, profile.phone]);
+
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSave = () => {
-    onSave && onSave('Profile settings saved successfully');
+    onSave && onSave(formData);
   };
 
   return (

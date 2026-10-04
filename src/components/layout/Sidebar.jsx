@@ -8,9 +8,11 @@ import {
   LineChart, 
   FileText, 
   Settings,
+  SlidersHorizontal,
   ChevronLeft,
   ChevronRight,
-  Plane
+  Plane,
+  BadgeCheck
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -19,8 +21,10 @@ const navItems = [
   { path: '/users', label: 'Users', icon: Users },
   { path: '/listings', label: 'Listings', icon: Building2 },
   { path: '/bookings', label: 'Bookings', icon: CalendarCheck },
+  { path: '/hosts', label: 'Hosts', icon: BadgeCheck },
   { path: '/analytics', label: 'Analytics', icon: LineChart },
   { path: '/reports', label: 'Reports', icon: FileText },
+  { path: '/configuration', label: 'Configuration', icon: SlidersHorizontal },
   { path: '/settings', label: 'Settings', icon: Settings },
 ];
 

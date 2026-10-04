@@ -10,13 +10,46 @@ import AppearanceSettings from '../components/settings/AppearanceSettings';
 import DashboardPreferences from '../components/settings/DashboardPreferences';
 import NotificationSettings from '../components/settings/NotificationSettings';
 import SecuritySettings from '../components/settings/SecuritySettings';
+import { apiFetch } from '../lib/api';
 
-// Mock Data
-import { adminProfile, defaultPreferences } from '../data/settingsData';
+// Fallback shape while the real profile is loading.
+import { defaultPreferences } from '../data/settingsData';
+
+const emptyProfile = {
+  name: '',
+  username: '',
+  email: '',
+  phone: '',
+  role: '',
+  avatar: 'https://i.pravatar.cc/150?u=lotnis',
+  createdAt: new Date().toISOString(),
+  lastLogin: new Date().toISOString(),
+  status: 'Active',
+};
+
+function mapBackendProfile(data) {
+  const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
+  return {
+    name,
+    username: data.email ? data.email.split('@')[0] : '',
+    email: data.email || '',
+    phone: data.phone || '',
+    role: data.dashboard_role
+      ? data.dashboard_role.charAt(0).toUpperCase() + data.dashboard_role.slice(1)
+      : 'Manager',
+    avatar: data.avatar_url || `https://i.pravatar.cc/150?u=${data.email || data.id}`,
+    createdAt: data.created_at,
+    lastLogin: data.member_since || data.created_at,
+    status: 'Active',
+  };
+}
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('profile');
   const [toastMessage, setToastMessage] = useState('');
+  const [profile, setProfile] = useState(emptyProfile);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   // Initial theme loader just to ensure the settings page acts correctly
   useEffect(() => {
@@ -29,19 +62,53 @@ export default function Settings() {
     }
   }, []);
 
-  const handleSaveNotification = (message) => {
-    setToastMessage(message);
+  // Load the real signed-in admin's profile from the backend.
+  useEffect(() => {
+    let cancelled = false;
+    apiFetch('/admin/access/profile')
+      .then((data) => {
+        if (!cancelled) setProfile(mapBackendProfile(data));
+      })
+      .catch((error) => {
+        if (!cancelled) setLoadError(error.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleSaveNotification = async (value) => {
+    if (typeof value === 'object' && value.name !== undefined) {
+      const updated = await apiFetch('/admin/access/profile', {
+        method: 'PATCH',
+        body: JSON.stringify({
+          firstName: value.name.split(' ')[0],
+          lastName: value.name.split(' ').slice(1).join(' '),
+          phone: value.phone,
+        }),
+      });
+      setProfile((current) => ({ ...current, ...mapBackendProfile(updated) }));
+    } else if (typeof value === 'object') {
+      setProfile((current) => ({ ...current, ...value }));
+    }
+    setToastMessage(typeof value === 'string' ? value : 'Profile settings saved successfully');
     setTimeout(() => {
       setToastMessage('');
     }, 3000);
   };
 
   const renderActiveSection = () => {
+    if (loading) {
+      return <p className={pageStyles.subtitle}>Loading your profile…</p>;
+    }
     switch (activeTab) {
       case 'profile':
-        return <ProfileSettings profile={adminProfile} onSave={handleSaveNotification} />;
+        return <ProfileSettings profile={profile} onSave={handleSaveNotification} />;
       case 'account':
-        return <AccountSettings profile={adminProfile} />;
+        return <AccountSettings profile={profile} />;
       case 'appearance':
         return <AppearanceSettings onSave={handleSaveNotification} />;
       case 'dashboard':

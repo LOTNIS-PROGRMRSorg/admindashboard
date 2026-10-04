@@ -1,15 +1,24 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import UserStats from '../components/users/UserStats';
 import UserFilters from '../components/users/UserFilters';
 import UserTable from '../components/users/UserTable';
 import UserDrawer from '../components/users/UserDrawer';
 import ConfirmModal from '../components/users/ConfirmModal';
 import Pagination from '../components/common/Pagination';
-import { usersData as initialUsers, userStatsData } from '../data/mockData';
+import { apiFetch } from '../lib/api';
 import styles from './Users.module.css';
 
+const emptyStats = {
+  totalUsers: { value: 0, trend: 0, isPositive: true },
+  activeUsers: { value: 0, trend: 0, isPositive: true },
+  suspendedUsers: { value: 0, trend: 0, isPositive: true },
+  newThisMonth: { value: 0, trend: 0, isPositive: true },
+};
+
 export default function Users() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
+  const [userStatsData, setUserStatsData] = useState(emptyStats);
+  const [loadError, setLoadError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [roleFilter, setRoleFilter] = useState('All');
@@ -19,6 +28,23 @@ export default function Users() {
   // Drawer and Modal states
   const [selectedUser, setSelectedUser] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      apiFetch('/admin/users?limit=200'),
+      apiFetch('/admin/users/stats'),
+    ])
+      .then(([listResult, statsResult]) => {
+        if (cancelled) return;
+        setUsers(listResult.users || []);
+        setUserStatsData(statsResult);
+      })
+      .catch((error) => !cancelled && setLoadError(error.message));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Filtering Logic
   const filteredUsers = useMemo(() => {
@@ -58,6 +84,7 @@ export default function Users() {
       <div className={styles.header}>
         <h1 className={styles.title}>Users Management</h1>
         <p className={styles.subtitle}>Manage all registered users on the Lotnis platform.</p>
+        {loadError && <p className={styles.subtitle} style={{ color: '#dc2626' }}>{loadError}</p>}
       </div>
 
       <UserStats stats={userStatsData} />
@@ -101,3 +128,4 @@ export default function Users() {
     </div>
   );
 }
+

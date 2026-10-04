@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ToggleSwitch.module.css';
 
-export default function ToggleSwitch({ checked, onChange, label, description }) {
+export default function ToggleSwitch({ checked, onChange, label, description, disabled }) {
   return (
     <label className={styles.container}>
       <div className={styles.textContainer}>
@@ -13,6 +13,7 @@ export default function ToggleSwitch({ checked, onChange, label, description }) 
           type="checkbox" 
           className={styles.input} 
           checked={checked} 
+          disabled={disabled}
           onChange={(e) => onChange(e.target.checked)} 
         />
         <span className={styles.slider}></span>

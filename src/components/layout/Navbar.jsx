@@ -1,4 +1,5 @@
-import { Search, Bell } from 'lucide-react';
+import { Search, Bell, LogOut } from 'lucide-react';
+import { clearAccessToken } from '../../lib/api';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
@@ -26,6 +27,10 @@ export default function Navbar() {
             <span className={styles.role}>Superadmin</span>
           </div>
         </div>
+
+        <button className={styles.iconBtn} aria-label="Sign out" title="Sign out" onClick={clearAccessToken}>
+          <LogOut size={20} />
+        </button>
       </div>
     </header>
   );

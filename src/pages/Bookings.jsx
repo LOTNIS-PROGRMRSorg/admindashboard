@@ -1,15 +1,62 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import BookingStats from '../components/bookings/BookingStats';
 import BookingFilters from '../components/bookings/BookingFilters';
 import BookingTable from '../components/bookings/BookingTable';
 import BookingDrawer from '../components/bookings/BookingDrawer';
 import ConfirmModal from '../components/users/ConfirmModal'; // Reusing
 import Pagination from '../components/common/Pagination';
-import { bookingsData as initialBookings, bookingStatsData } from '../data/mockData';
+import { apiFetch } from '../lib/api';
 import styles from './Bookings.module.css';
 
+const BOOKING_STATUS_LABELS = {
+  pending: 'Pending',
+  confirmed: 'Confirmed',
+  active: 'Ongoing',
+  completed: 'Completed',
+  cancelled: 'Cancelled',
+  no_show: 'Cancelled',
+};
+
+function paymentStatusFor(status) {
+  if (['confirmed', 'active', 'completed'].includes(status)) return 'Paid';
+  if (status === 'cancelled' || status === 'no_show') return 'Refunded';
+  return 'Partially Paid';
+}
+
+function mapBooking(b) {
+  const guestName = [b.renter?.first_name, b.renter?.last_name].filter(Boolean).join(' ') || b.renter?.email || 'Guest';
+  return {
+    id: b.id,
+    guestName,
+    guestAvatar: guestName.charAt(0).toUpperCase(),
+    guestEmail: b.renter?.email || '',
+    guestPhone: b.renter?.phone || '',
+    propertyName: b.property?.name || 'Property',
+    hostName: b.owner_name || 'Unknown host',
+    checkInDate: b.start_date,
+    checkOutDate: b.end_date,
+    guestsCount: b.duration ?? 1,
+    totalAmount: b.final_amount ?? 0,
+    bookingStatus: BOOKING_STATUS_LABELS[b.status] || b.status,
+    paymentStatus: paymentStatusFor(b.status),
+    bookingDate: b.created_at,
+    notes: b.owner_notes || '',
+    timeline: [],
+  };
+}
+
+const emptyStats = {
+  totalBookings: { value: 0, trend: 0, isPositive: true },
+  confirmedBookings: { value: 0, trend: 0, isPositive: true },
+  cancelledBookings: { value: 0, trend: 0, isPositive: true },
+  monthlyRevenue: { value: '—', trend: 0, isPositive: true },
+};
+
 export default function Bookings() {
-  const [bookings, setBookings] = useState(initialBookings);
+  const [bookings, setBookings] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [transactionError, setTransactionError] = useState('');
+  const [bookingsError, setBookingsError] = useState('');
   
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,6 +72,36 @@ export default function Bookings() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [bookingToConfirm, setBookingToConfirm] = useState(null);
   const [confirmActionType, setConfirmActionType] = useState(''); // 'cancel' or 'refund'
+
+  useEffect(() => {
+    apiFetch('/admin/bookings/transactions')
+      .then((body) => setTransactions(body.data || []))
+      .catch((error) => setTransactionError(error.message));
+
+    apiFetch('/admin/bookings?limit=200')
+      .then((body) => setBookings((body.data || []).map(mapBooking)))
+      .catch((error) => setBookingsError(error.message));
+  }, []);
+
+  const bookingStatsData = useMemo(() => {
+    if (!bookings.length) return emptyStats;
+    const confirmed = bookings.filter((b) => b.bookingStatus === 'Confirmed' || b.bookingStatus === 'Completed' || b.bookingStatus === 'Ongoing').length;
+    const cancelled = bookings.filter((b) => b.bookingStatus === 'Cancelled').length;
+    const thisMonth = new Date();
+    const monthlyRevenue = transactions
+      .filter((t) => {
+        const created = new Date(t.created_at);
+        return created.getMonth() === thisMonth.getMonth() && created.getFullYear() === thisMonth.getFullYear();
+      })
+      .reduce((sum, t) => sum + (t.platform_fee || 0), 0);
+    const currency = transactions[0]?.currency || 'GHS';
+    return {
+      totalBookings: { value: bookings.length, trend: 0, isPositive: true },
+      confirmedBookings: { value: confirmed, trend: 0, isPositive: true },
+      cancelledBookings: { value: cancelled, trend: 0, isPositive: cancelled === 0 },
+      monthlyRevenue: { value: `${currency} ${monthlyRevenue.toLocaleString()}`, trend: 0, isPositive: true },
+    };
+  }, [bookings, transactions]);
 
   // Filtering Logic
   const filteredBookings = useMemo(() => {
@@ -53,7 +130,7 @@ export default function Bookings() {
 
   useMemo(() => setCurrentPage(1), [searchQuery, statusFilter, paymentFilter, dateFilter]);
 
-  // CSV Export Mock
+  // CSV Export
   const handleExportCSV = () => {
     const csvContent = "data:text/csv;charset=utf-8," 
       + "Booking ID,Guest Name,Property,Host,Check-in,Check-out,Amount,Booking Status,Payment Status\n"
@@ -97,9 +174,11 @@ export default function Bookings() {
       <div className={styles.header}>
         <h1 className={styles.title}>Booking Management</h1>
         <p className={styles.subtitle}>Track and manage all reservations made across the Lotnis platform.</p>
+        {bookingsError && <p className={styles.subtitle} style={{ color: '#dc2626' }}>{bookingsError}</p>}
       </div>
 
       <BookingStats stats={bookingStatsData} />
+
 
       <BookingFilters 
         searchQuery={searchQuery} setSearchQuery={setSearchQuery}
@@ -145,3 +224,4 @@ export default function Bookings() {
     </div>
   );
 }
+
