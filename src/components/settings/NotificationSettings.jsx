@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './SettingsSection.module.css';
 import ToggleSwitch from './ToggleSwitch';
 
 export default function NotificationSettings({ defaultPrefs, onSave }) {
-  const [prefs, setPrefs] = useState(defaultPrefs);
-
-  useEffect(() => {
+  const [prefs, setPrefs] = useState(() => {
     const saved = localStorage.getItem('lotnis_notification_prefs');
-    if (saved) {
-      setPrefs(JSON.parse(saved));
-    }
-  }, []);
+    if (!saved) return defaultPrefs;
+
+    const parsed = JSON.parse(saved);
+    return {
+      ...defaultPrefs,
+      ...parsed,
+      email: { ...defaultPrefs.email, ...parsed.email },
+      dashboard: { ...defaultPrefs.dashboard, ...parsed.dashboard },
+    };
+  });
 
   const handleEmailChange = (key, value) => {
     setPrefs(prev => ({

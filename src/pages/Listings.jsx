@@ -122,7 +122,20 @@ export default function Listings() {
     return filteredListings.slice(start, start + itemsPerPage);
   }, [filteredListings, currentPage, itemsPerPage]);
 
-  useMemo(() => setCurrentPage(1), [searchQuery, statusFilter, categoryFilter]);
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilterChange = (value) => {
+    setStatusFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryFilterChange = (value) => {
+    setCategoryFilter(value);
+    setCurrentPage(1);
+  };
 
   // Actions
   const handleApproveClick = (property) => {
@@ -169,9 +182,9 @@ export default function Listings() {
       <ListingStats stats={listingStatsData} />
 
       <ListingFilters 
-        searchQuery={searchQuery} setSearchQuery={setSearchQuery}
-        statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-        categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter}
+        searchQuery={searchQuery} setSearchQuery={handleSearchChange}
+        statusFilter={statusFilter} setStatusFilter={handleStatusFilterChange}
+        categoryFilter={categoryFilter} setCategoryFilter={handleCategoryFilterChange}
         viewMode={viewMode} setViewMode={setViewMode}
       />
 

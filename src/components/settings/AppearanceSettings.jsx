@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './SettingsSection.module.css';
 
 export default function AppearanceSettings({ onSave }) {
-  const [theme, setTheme] = useState('system');
-
-  useEffect(() => {
-    // Load preference
-    const savedTheme = localStorage.getItem('lotnis_theme_preference') || 'system';
-    setTheme(savedTheme);
-  }, []);
+  const [theme, setTheme] = useState(() => (
+    localStorage.getItem('lotnis_theme_preference') || 'system'
+  ));
 
   const applyTheme = (newTheme) => {
     setTheme(newTheme);

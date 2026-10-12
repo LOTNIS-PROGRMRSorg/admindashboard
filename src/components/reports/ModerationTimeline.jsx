@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './ModerationTimeline.module.css';
 
 export default function ModerationTimeline({ events }) {

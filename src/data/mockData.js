@@ -328,17 +328,31 @@ export const analyticsSummaryData = {
 };
 
 export const revenueAnalyticsData = [
-  { month: 'Jan', revenue: 28000, bookings: 120 },
-  { month: 'Feb', revenue: 32000, bookings: 145 },
-  { month: 'Mar', revenue: 38000, bookings: 180 },
-  { month: 'Apr', revenue: 36000, bookings: 170 },
-  { month: 'May', revenue: 45000, bookings: 210 },
-  { month: 'Jun', revenue: 52000, bookings: 250 },
-  { month: 'Jul', revenue: 68000, bookings: 320 }, // Peak summer
-  { month: 'Aug', revenue: 75000, bookings: 350 },
-  { month: 'Sep', revenue: 62000, bookings: 290 },
-  { month: 'Oct', revenue: 48900, bookings: 225 }, // Current
+  { month: "Nov '25", period: '2025-11', revenue: 24000, bookings: 105 },
+  { month: "Dec '25", period: '2025-12', revenue: 26500, bookings: 118 },
+  { month: 'Jan', period: '2026-01', revenue: 28000, bookings: 120 },
+  { month: 'Feb', period: '2026-02', revenue: 32000, bookings: 145 },
+  { month: 'Mar', period: '2026-03', revenue: 38000, bookings: 180 },
+  { month: 'Apr', period: '2026-04', revenue: 36000, bookings: 170 },
+  { month: 'May', period: '2026-05', revenue: 45000, bookings: 210 },
+  { month: 'Jun', period: '2026-06', revenue: 52000, bookings: 250 },
+  { month: 'Jul', period: '2026-07', revenue: 68000, bookings: 320 },
+  { month: 'Aug', period: '2026-08', revenue: 75000, bookings: 350 },
+  { month: 'Sep', period: '2026-09', revenue: 62000, bookings: 290 },
+  { month: 'Oct', period: '2026-10', revenue: 48900, bookings: 225 },
 ];
+
+// Deterministic daily demo series for the short date-range selections.
+export const dailyAnalyticsData = Array.from({ length: 30 }, (_, index) => {
+  const date = new Date(Date.UTC(2026, 9, 12 - (29 - index)));
+
+  return {
+    date: date.toISOString().slice(0, 10),
+    month: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }),
+    revenue: 1200 + ((index * 137 + (index % 6) * 91) % 1100),
+    bookings: 8 + ((index * 7 + Math.floor(index / 3)) % 17),
+  };
+});
 
 export const occupancyTrendsData = [
   { name: 'Villas', value: 85, fill: '#4f46e5' },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styles from './SettingsSection.module.css';
 import FormInput from './FormInput';
 import ToggleSwitch from './ToggleSwitch';

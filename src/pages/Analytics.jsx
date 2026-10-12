@@ -11,6 +11,7 @@ import ActivityFeed from '../components/dashboard/ActivityFeed'; // Reusing exis
 import { 
   analyticsSummaryData, 
   revenueAnalyticsData, 
+  dailyAnalyticsData,
   occupancyTrendsData,
   bookingSourcesData,
   popularLocationsData,
@@ -22,36 +23,68 @@ import styles from './Analytics.module.css';
 export default function Analytics() {
   const [dateRange, setDateRange] = useState('30');
   const [isLoading, setIsLoading] = useState(false);
+  const trendData = dateRange === '7'
+    ? dailyAnalyticsData.slice(-7)
+    : dateRange === '30'
+      ? dailyAnalyticsData
+      : dateRange === '180'
+        ? revenueAnalyticsData.slice(-6)
+        : revenueAnalyticsData;
 
   // Simulate data fetching when date range changes
   useEffect(() => {
-    setIsLoading(true);
+    if (!isLoading) return undefined;
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 800); // 800ms simulated load time
     
     return () => clearTimeout(timer);
-  }, [dateRange]);
+  }, [isLoading]);
+
+  const handleDateRangeChange = (value) => {
+    setDateRange(value);
+    setIsLoading(true);
+  };
 
   const handleRefresh = () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
   };
 
   const handleExportCSV = () => {
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + "Metric,Value,Trend\n"
-      + `Total Revenue,${analyticsSummaryData.totalRevenue.value},${analyticsSummaryData.totalRevenue.trend}%\n`
-      + `Monthly Revenue,${analyticsSummaryData.monthlyRevenue.value},${analyticsSummaryData.monthlyRevenue.trend}%\n`
-      + `Booking Growth,${analyticsSummaryData.bookingGrowth.value},${analyticsSummaryData.bookingGrowth.trend}%\n`
-      + `Average Occupancy,${analyticsSummaryData.avgOccupancy.value},${analyticsSummaryData.avgOccupancy.trend}%\n`
-      + `Active Users,${analyticsSummaryData.activeUsers.value},${analyticsSummaryData.activeUsers.trend}%\n`
-      + "\nTop Locations,Bookings,Revenue\n"
-      + popularLocationsData.map(l => `"${l.city}",${l.bookings},"${l.revenue}"`).join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
+    const summaryRows = Object.entries(analyticsSummaryData).map(([metric, values]) => [
+      'Summary', metric, values.value, `${values.trend}% trend`,
+    ]);
+    const revenueRows = trendData.map((point) => [
+      'Revenue Trends', point.month, point.revenue, 'Demo currency: USD',
+    ]);
+    const bookingRows = trendData.map((point) => [
+      'Booking Volume', point.month, point.bookings, 'Bookings',
+    ]);
+    const occupancyRows = occupancyTrendsData.map((item) => [
+      'Occupancy by Property Type', item.name, `${item.value}%`, 'Demo occupancy rate',
+    ]);
+    const sourceRows = bookingSourcesData.map((item) => [
+      'Traffic & Booking Sources', item.name, `${item.value}%`, 'Demo share',
+    ]);
+    const locationRows = popularLocationsData.map((item) => [
+      'Top Locations', item.city, item.bookings, item.revenue,
+    ]);
+    const csvRows = [
+      ['Data note', 'DEMO DATA - not live Lotnis business results'],
+      [],
+      ['Section', 'Metric / period', 'Value', 'Notes'],
+      ...summaryRows,
+      ...revenueRows,
+      ...bookingRows,
+      ...occupancyRows,
+      ...sourceRows,
+      ...locationRows,
+    ];
+    const csvContent = csvRows
+      .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(','))
+      .join('\n');
+    const encodedUri = `data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`;
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", `lotnis_analytics_export_${dateRange}d.csv`);
@@ -64,7 +97,7 @@ export default function Analytics() {
     <div className={styles.page}>
       <AnalyticsHeader 
         dateRange={dateRange} 
-        setDateRange={setDateRange} 
+        setDateRange={handleDateRangeChange}
         onExport={handleExportCSV}
         onRefresh={handleRefresh}
         isLoading={isLoading}
@@ -76,10 +109,10 @@ export default function Analytics() {
 
         <div className={styles.chartsRow}>
           <div className={styles.chartContainer}>
-            <RevenueCharts data={revenueAnalyticsData} />
+          <RevenueCharts data={trendData} />
           </div>
           <div className={styles.chartContainer}>
-            <BookingGrowthChart data={revenueAnalyticsData} />
+            <BookingGrowthChart data={trendData} />
           </div>
         </div>
 

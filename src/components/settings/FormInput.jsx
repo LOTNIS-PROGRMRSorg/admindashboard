@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './FormInput.module.css';
 
 export default function FormInput({ label, type = 'text', value, onChange, placeholder, disabled, hint }) {

@@ -1,7 +1,7 @@
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import styles from './ChartCard.module.css';
 
-export default function ChartCard({ title, subtitle, data }) {
+export default function ChartCard({ title, subtitle, data, children }) {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
@@ -9,6 +9,7 @@ export default function ChartCard({ title, subtitle, data }) {
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       </div>
       <div className={styles.chartContainer}>
+        {children ?? (
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
@@ -53,6 +54,7 @@ export default function ChartCard({ title, subtitle, data }) {
             />
           </AreaChart>
         </ResponsiveContainer>
+        )}
       </div>
     </div>
   );
