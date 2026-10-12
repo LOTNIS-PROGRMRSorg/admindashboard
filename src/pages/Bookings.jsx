@@ -114,12 +114,12 @@ export default function Bookings() {
       
       const matchesStatus = statusFilter === 'All' || booking.bookingStatus === statusFilter;
       const matchesPayment = paymentFilter === 'All' || booking.paymentStatus === paymentFilter;
-      // Date filtering is not implemented in this mock-data view yet.
+      // Date filter is ignored in mock logic, assuming all mock data passes.
       const matchesDate = true; 
 
       return matchesSearch && matchesStatus && matchesPayment && matchesDate;
     });
-  }, [bookings, searchQuery, statusFilter, paymentFilter]);
+  }, [bookings, searchQuery, statusFilter, paymentFilter, dateFilter]);
 
   // Pagination Logic
   const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
@@ -128,25 +128,7 @@ export default function Bookings() {
     return filteredBookings.slice(start, start + itemsPerPage);
   }, [filteredBookings, currentPage, itemsPerPage]);
 
-  const handleSearchChange = (value) => {
-    setSearchQuery(value);
-    setCurrentPage(1);
-  };
-
-  const handleStatusFilterChange = (value) => {
-    setStatusFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handlePaymentFilterChange = (value) => {
-    setPaymentFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleDateFilterChange = (value) => {
-    setDateFilter(value);
-    setCurrentPage(1);
-  };
+  useMemo(() => setCurrentPage(1), [searchQuery, statusFilter, paymentFilter, dateFilter]);
 
   // CSV Export
   const handleExportCSV = () => {
@@ -199,10 +181,10 @@ export default function Bookings() {
 
 
       <BookingFilters 
-        searchQuery={searchQuery} setSearchQuery={handleSearchChange}
-        statusFilter={statusFilter} setStatusFilter={handleStatusFilterChange}
-        paymentFilter={paymentFilter} setPaymentFilter={handlePaymentFilterChange}
-        dateFilter={dateFilter} setDateFilter={handleDateFilterChange}
+        searchQuery={searchQuery} setSearchQuery={setSearchQuery}
+        statusFilter={statusFilter} setStatusFilter={setStatusFilter}
+        paymentFilter={paymentFilter} setPaymentFilter={setPaymentFilter}
+        dateFilter={dateFilter} setDateFilter={setDateFilter}
         onExport={handleExportCSV}
       />
 

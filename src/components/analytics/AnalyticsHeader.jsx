@@ -6,7 +6,7 @@ export default function AnalyticsHeader({ dateRange, setDateRange, onExport, onR
     <div className={styles.headerContainer}>
       <div className={styles.titleArea}>
         <h1 className={styles.title}>Platform Analytics</h1>
-        <p className={styles.subtitle}>Monitor platform trends. Figures shown are development demo data, not live business results.</p>
+        <p className={styles.subtitle}>Monitor booking trends, revenue growth, and user activity.</p>
       </div>
 
       <div className={styles.controlsArea}>

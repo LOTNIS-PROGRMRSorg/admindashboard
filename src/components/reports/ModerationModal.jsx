@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './ModerationModal.module.css';
 import { CategoryBadge, ReportStatusBadge, PriorityBadge } from './Badges';
 import ModerationTimeline from './ModerationTimeline';

@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './SettingsSidebar.module.css';
 
 const TABS = [

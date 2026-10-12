@@ -9,8 +9,8 @@ export default function BookingSources({ data }) {
           <Pie
             data={data}
             cx="50%"
-            cy="43%"
-            outerRadius="62%"
+            cy="50%"
+            outerRadius={80}
             dataKey="value"
             labelLine={false}
           >
@@ -27,14 +27,7 @@ export default function BookingSources({ data }) {
             }}
             formatter={(value) => [`${value}%`, 'Share']}
           />
-          <Legend
-            verticalAlign="bottom"
-            align="center"
-            height={56}
-            iconType="circle"
-            wrapperStyle={{ width: '100%', fontSize: 12, lineHeight: '20px' }}
-            formatter={(value) => <span style={{ color: 'var(--color-text-muted)' }}>{value}</span>}
-          />
+          <Legend verticalAlign="bottom" height={36} iconType="circle" />
         </PieChart>
       </ResponsiveContainer>
     </ChartCard>

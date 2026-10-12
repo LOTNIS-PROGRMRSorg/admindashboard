@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './ReportsTable.module.css';
 import { CategoryBadge, ReportStatusBadge, PriorityBadge } from './Badges';
 

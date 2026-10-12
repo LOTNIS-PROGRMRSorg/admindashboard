@@ -33,20 +33,16 @@
 
 @media (min-width: 1024px) {
   .dataRow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .dataRow > :first-child {
-    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
 .chartContainer {
-  height: 400px;
+  height: 350px;
 }
 
 .chartContainerSmall {
-  height: 400px;
+  height: 300px;
 }
 
 /* Loading Overlay */

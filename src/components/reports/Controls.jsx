@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './Controls.module.css';
 
 export default function Controls({ searchTerm, onSearchChange, statusFilter, onStatusFilterChange }) {

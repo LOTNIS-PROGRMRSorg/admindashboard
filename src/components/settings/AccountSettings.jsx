@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './SettingsSection.module.css';
 
 export default function AccountSettings({ profile }) {

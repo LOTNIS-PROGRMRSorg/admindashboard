@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './FlaggedListingCard.module.css';
 
 export default function FlaggedListingCard({ listing, onAction }) {

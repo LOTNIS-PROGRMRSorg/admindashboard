@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './SettingsSection.module.css';
 import ToggleSwitch from './ToggleSwitch';
 
 export default function DashboardPreferences({ defaultPrefs, onSave }) {
-  const [prefs, setPrefs] = useState(() => {
+  const [prefs, setPrefs] = useState(defaultPrefs);
+
+  useEffect(() => {
     const saved = localStorage.getItem('lotnis_dashboard_prefs');
-    return saved ? { ...defaultPrefs, ...JSON.parse(saved) } : defaultPrefs;
-  });
+    if (saved) {
+      setPrefs(JSON.parse(saved));
+    }
+  }, []);
 
   const handleChange = (key, value) => {
     setPrefs(prev => ({ ...prev, [key]: value }));

@@ -68,20 +68,8 @@ export default function Users() {
     return filteredUsers.slice(start, start + itemsPerPage);
   }, [filteredUsers, currentPage, itemsPerPage]);
 
-  const handleSearchChange = (value) => {
-    setSearchQuery(value);
-    setCurrentPage(1);
-  };
-
-  const handleStatusFilterChange = (value) => {
-    setStatusFilter(value);
-    setCurrentPage(1);
-  };
-
-  const handleRoleFilterChange = (value) => {
-    setRoleFilter(value);
-    setCurrentPage(1);
-  };
+  // Reset page when filters change
+  useMemo(() => setCurrentPage(1), [searchQuery, statusFilter, roleFilter]);
 
   // Actions
   const handleDeleteConfirm = () => {
@@ -103,11 +91,11 @@ export default function Users() {
 
       <UserFilters 
         searchQuery={searchQuery}
-        setSearchQuery={handleSearchChange}
+        setSearchQuery={setSearchQuery}
         statusFilter={statusFilter}
-        setStatusFilter={handleStatusFilterChange}
+        setStatusFilter={setStatusFilter}
         roleFilter={roleFilter}
-        setRoleFilter={handleRoleFilterChange}
+        setRoleFilter={setRoleFilter}
       />
 
       <UserTable 

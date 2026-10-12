@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './StatCard.module.css';
 
 export default function StatCard({ title, value, icon, color = 'primary' }) {

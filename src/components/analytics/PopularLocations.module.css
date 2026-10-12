@@ -25,12 +25,10 @@
 
 .item {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
-  column-gap: var(--spacing-2);
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   padding: var(--spacing-4) var(--spacing-6);
   border-bottom: 1px solid var(--color-border);
   align-items: center;
-  min-width: 0;
   transition: background-color 0.2s;
 }
 
@@ -56,7 +54,6 @@
 .cell {
   font-size: 0.875rem;
   color: var(--color-text-base);
-  min-width: 0;
 }
 
 .cityCell {
@@ -64,12 +61,6 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
-  overflow-wrap: anywhere;
-}
-
-.cityCell svg,
-.rankBadge {
-  flex-shrink: 0;
 }
 
 .rankBadge {

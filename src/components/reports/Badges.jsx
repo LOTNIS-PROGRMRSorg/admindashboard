@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from './Badges.module.css';
 
 export const CategoryBadge = ({ category }) => {
