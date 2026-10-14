@@ -1,16 +1,15 @@
-import { Eye, Check, X, SearchX, Edit } from 'lucide-react';
+import { Eye, Check, X, SearchX } from 'lucide-react';
 import ListingStatusBadge from './ListingStatusBadge';
 import styles from './ListingTable.module.css';
 
-export default function ListingTable({ listings, onView, onApprove, onReject }) {
-  if (!listings || listings.length === 0) {
+export default function ListingTable({ listings, onView, onApprove, onReject, hasActiveFilters, onClearFilters }) {
+  if (!listings.length) {
     return (
-      <div className={styles.tableWrapper}>
-        <div className={styles.emptyState}>
-          <SearchX size={48} className={styles.emptyIcon} />
-          <h3 className={styles.emptyTitle}>No listings found</h3>
-          <p>Try adjusting your search or filter criteria.</p>
-        </div>
+      <div className={styles.emptyState}>
+        <SearchX size={34} className={styles.emptyIcon} />
+        <h3 className={styles.emptyTitle}>No listings match these filters</h3>
+        <p>{hasActiveFilters ? 'Try a different search or clear the selected filters.' : 'There are no listings in the sample data yet.'}</p>
+        {hasActiveFilters && <button type="button" className={styles.clearButton} onClick={onClearFilters}>Clear filters</button>}
       </div>
     );
   }
@@ -18,66 +17,37 @@ export default function ListingTable({ listings, onView, onApprove, onReject }) 
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.table}>
-        <thead>
-          <tr>
-            <th className={styles.th}>Property</th>
-            <th className={styles.th}>Host</th>
-            <th className={styles.th}>Category</th>
-            <th className={styles.th}>Price</th>
-            <th className={styles.th}>Status</th>
-            <th className={styles.th}>Date Listed</th>
-            <th className={styles.th}>Actions</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th scope="col">Property</th><th scope="col">Host</th><th scope="col">Category</th>
+          <th scope="col">Price / night</th><th scope="col">Rating</th><th scope="col">Bookings</th>
+          <th scope="col">Status</th><th scope="col">Listed</th><th scope="col">Actions</th>
+        </tr></thead>
         <tbody>
           {listings.map((property) => (
-            <tr key={property.id} className={styles.tr}>
-              <td className={styles.td}>
+            <tr key={property.id}>
+              <td>
                 <div className={styles.propertyCell}>
-                  <img src={property.image} alt="" className={styles.thumbnail} />
+                  <img src={property.image} alt="" className={styles.thumbnail} loading="lazy" />
                   <div className={styles.propertyInfo}>
-                    <span className={styles.title}>{property.title.length > 25 ? `${property.title.substring(0,25)}...` : property.title}</span>
-                    <span className={styles.location}>{property.location}</span>
+                    <span className={styles.title}>{property.title}{property.featured && <span className={styles.featured}> · Featured</span>}</span>
+                    <span className={styles.location}>{property.location} · {property.id}</span>
                   </div>
                 </div>
               </td>
-              <td className={styles.td}>{property.hostName}</td>
-              <td className={styles.td}>{property.category}</td>
-              <td className={styles.td}><span className={styles.price}>${property.pricePerNight}</span></td>
-              <td className={styles.td}>
-                <ListingStatusBadge status={property.status} />
-              </td>
-              <td className={styles.td}>{property.dateListed}</td>
-              <td className={styles.td}>
+              <td>{property.hostName}</td>
+              <td>{property.category}</td>
+              <td><span className={styles.price}>${property.pricePerNight}</span></td>
+              <td>{property.rating}</td>
+              <td>{property.bookingsCount}</td>
+              <td><ListingStatusBadge status={property.status} /></td>
+              <td>{property.dateListed}</td>
+              <td>
                 <div className={styles.actions}>
-                  <button 
-                    className={styles.iconBtn} 
-                    title="View Details"
-                    onClick={() => onView(property)}
-                  >
-                    <Eye size={16} />
-                  </button>
-                  <button className={styles.iconBtn} title="Edit Listing">
-                    <Edit size={16} />
-                  </button>
-                  {property.status === 'Pending' && (
-                    <>
-                      <button 
-                        className={`${styles.iconBtn} ${styles.success}`} 
-                        title="Approve"
-                        onClick={() => onApprove(property)}
-                      >
-                        <Check size={16} />
-                      </button>
-                      <button 
-                        className={`${styles.iconBtn} ${styles.danger}`} 
-                        title="Reject"
-                        onClick={() => onReject(property)}
-                      >
-                        <X size={16} />
-                      </button>
-                    </>
-                  )}
+                  <button type="button" className={styles.iconBtn} aria-label={`View ${property.title}`} onClick={() => onView(property)}><Eye size={16} /></button>
+                  {property.status === 'Pending' && <>
+                    <button type="button" className={`${styles.iconBtn} ${styles.success}`} aria-label={`Approve ${property.title}`} onClick={() => onApprove(property)}><Check size={16} /></button>
+                    <button type="button" className={`${styles.iconBtn} ${styles.danger}`} aria-label={`Reject ${property.title}`} onClick={() => onReject(property)}><X size={16} /></button>
+                  </>}
                 </div>
               </td>
             </tr>

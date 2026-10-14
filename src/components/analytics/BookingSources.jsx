@@ -27,7 +27,7 @@ export default function BookingSources({ data }) {
             }}
             formatter={(value) => [`${value}%`, 'Share']}
           />
-          <Legend verticalAlign="bottom" height={36} iconType="circle" />
+          <Legend verticalAlign="bottom" height={36} iconType="circle" formatter={(value) => <span style={{ color: 'var(--color-text-muted)' }}>{value}</span>} />
         </PieChart>
       </ResponsiveContainer>
     </ChartCard>

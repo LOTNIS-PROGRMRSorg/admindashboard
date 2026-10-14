@@ -26,6 +26,11 @@
   min-width: 0; /* Prevents overflow in CSS grid */
 }
 
+@media (max-width: 767px) {
+  .layout { gap: var(--spacing-4); }
+  .sidebarColumn { position: static; min-width: 0; }
+}
+
 /* Toast Notification */
 .toast {
   position: fixed;
@@ -45,7 +50,8 @@
 }
 
 .toastIcon {
-  font-size: 1.125rem;
+  color: var(--color-success);
+  flex: 0 0 auto;
 }
 
 .toastText {

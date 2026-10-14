@@ -6,7 +6,7 @@ export default function PropertyCard({ property, onView, onApprove, onReject }) 
   return (
     <div className={styles.card}>
       <div className={styles.imageWrapper}>
-        <img src={property.image} alt={property.title} className={styles.image} />
+        <img src={property.image} alt={property.title} className={styles.image} loading="lazy" />
         <div className={styles.badgeOverlay}>
           <ListingStatusBadge status={property.status} />
         </div>
@@ -30,6 +30,11 @@ export default function PropertyCard({ property, onView, onApprove, onReject }) 
           <MapPin size={14} />
           {property.location}
         </div>
+
+        <div className={styles.metadata}>
+          <span>{property.category}</span>
+          <span>{property.bookingsCount} bookings · {property.id}</span>
+        </div>
         
         <div className={styles.details}>
           <div><span className={styles.price}>${property.pricePerNight}</span> / night</div>
@@ -37,16 +42,16 @@ export default function PropertyCard({ property, onView, onApprove, onReject }) 
         </div>
         
         <div className={styles.actions}>
-          <button className={`${styles.btn} ${styles.btnView}`} onClick={() => onView(property)}>
+          <button type="button" className={`${styles.btn} ${styles.btnView}`} onClick={() => onView(property)}>
             <Eye size={16} /> View
           </button>
           
           {property.status === 'Pending' && (
             <>
-              <button className={`${styles.btn} ${styles.btnApprove}`} onClick={() => onApprove(property)}>
+              <button type="button" className={`${styles.btn} ${styles.btnApprove}`} onClick={() => onApprove(property)}>
                 <Check size={16} /> Approve
               </button>
-              <button className={`${styles.btn} ${styles.btnReject}`} onClick={() => onReject(property)}>
+              <button type="button" className={`${styles.btn} ${styles.btnReject}`} onClick={() => onReject(property)}>
                 <X size={16} /> Reject
               </button>
             </>

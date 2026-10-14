@@ -1,38 +1,26 @@
-import { Building2, CheckCircle, Clock, XCircle } from 'lucide-react';
-import StatCard from '../dashboard/StatCard';
+import { Building2, CheckCircle, Clock3, XCircle, PauseCircle } from 'lucide-react';
 import styles from './ListingStats.module.css';
 
-export default function ListingStats({ stats }) {
+export default function ListingStats({ listings }) {
+  const stats = [
+    { label: 'Listings in sample', value: listings.length, icon: Building2, tone: 'neutral' },
+    { label: 'Approved', value: listings.filter((item) => item.status === 'Approved').length, icon: CheckCircle, tone: 'success' },
+    { label: 'Pending review', value: listings.filter((item) => item.status === 'Pending').length, icon: Clock3, tone: 'warning' },
+    { label: 'Rejected', value: listings.filter((item) => item.status === 'Rejected').length, icon: XCircle, tone: 'danger' },
+    { label: 'Suspended', value: listings.filter((item) => item.status === 'Suspended').length, icon: PauseCircle, tone: 'neutral' },
+  ];
+
   return (
-    <div className={styles.statsGrid}>
-      <StatCard 
-        title="Total Listings" 
-        value={stats.totalListings.value} 
-        trend={stats.totalListings.trend} 
-        isPositive={stats.totalListings.isPositive} 
-        icon={Building2} 
-      />
-      <StatCard 
-        title="Approved Listings" 
-        value={stats.approvedListings.value} 
-        trend={stats.approvedListings.trend} 
-        isPositive={stats.approvedListings.isPositive} 
-        icon={CheckCircle} 
-      />
-      <StatCard 
-        title="Pending Approval" 
-        value={stats.pendingApproval.value} 
-        trend={stats.pendingApproval.trend} 
-        isPositive={stats.pendingApproval.isPositive} 
-        icon={Clock} 
-      />
-      <StatCard 
-        title="Rejected Listings" 
-        value={stats.rejectedListings.value} 
-        trend={stats.rejectedListings.trend} 
-        isPositive={stats.rejectedListings.isPositive} 
-        icon={XCircle} 
-      />
-    </div>
+    <section className={styles.statsGrid} aria-label="Listing counts from sample data">
+      {stats.map(({ label, value, icon: Icon, tone }) => (
+        <article className={styles.card} key={label}>
+          <div className={`${styles.icon} ${styles[tone]}`}><Icon size={19} /></div>
+          <div>
+            <p className={styles.label}>{label}</p>
+            <p className={styles.value}>{value}</p>
+          </div>
+        </article>
+      ))}
+    </section>
   );
 }

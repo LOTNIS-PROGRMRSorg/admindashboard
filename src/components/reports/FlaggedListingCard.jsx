@@ -1,11 +1,10 @@
-import React from 'react';
 import styles from './FlaggedListingCard.module.css';
 
-export default function FlaggedListingCard({ listing, onAction }) {
+export default function FlaggedListingCard({ listing }) {
   return (
     <div className={styles.card}>
       <div className={styles.imageContainer}>
-        <img src={listing.image} alt={listing.title} className={styles.image} />
+        <img src={listing.image} alt={listing.title} className={styles.image} loading="lazy" />
         <div className={styles.reportsBadge}>
           {listing.reportsCount} Reports
         </div>
@@ -29,22 +28,8 @@ export default function FlaggedListingCard({ listing, onAction }) {
           <p className={styles.reason}>{listing.reason}</p>
         </div>
         
-        <p className={styles.lastAction}>{listing.lastAction}</p>
-        
-        <div className={styles.actions}>
-          <button 
-            className={`${styles.button} ${styles.buttonSecondary}`}
-            onClick={() => onAction('view', listing.id)}
-          >
-            Review
-          </button>
-          <button 
-            className={`${styles.button} ${styles.buttonDanger}`}
-            onClick={() => onAction('suspend', listing.id)}
-          >
-            Suspend
-          </button>
-        </div>
+        <p className={styles.lastAction}><strong>Last sample action:</strong> {listing.lastAction}</p>
+        <p className={styles.unavailable}>Listing review and suspension are unavailable in this prototype.</p>
       </div>
     </div>
   );

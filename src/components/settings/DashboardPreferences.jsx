@@ -1,24 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './SettingsSection.module.css';
 import ToggleSwitch from './ToggleSwitch';
+import { readLocalPreferences, writeLocalPreferences } from './localPreferences';
 
 export default function DashboardPreferences({ defaultPrefs, onSave }) {
-  const [prefs, setPrefs] = useState(defaultPrefs);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('lotnis_dashboard_prefs');
-    if (saved) {
-      setPrefs(JSON.parse(saved));
-    }
-  }, []);
+  const [prefs, setPrefs] = useState(() => {
+    return { ...defaultPrefs, ...readLocalPreferences('lotnis_dashboard_prefs', {}) };
+  });
 
   const handleChange = (key, value) => {
     setPrefs(prev => ({ ...prev, [key]: value }));
   };
 
   const handleSave = () => {
-    localStorage.setItem('lotnis_dashboard_prefs', JSON.stringify(prefs));
-    onSave && onSave('Dashboard preferences saved successfully');
+    const saved = writeLocalPreferences('lotnis_dashboard_prefs', prefs);
+    onSave && onSave(saved ? 'Dashboard preferences saved in this browser' : 'Browser storage is unavailable; preferences were not saved');
   };
 
   return (
@@ -29,6 +25,7 @@ export default function DashboardPreferences({ defaultPrefs, onSave }) {
       </div>
 
       <div className={styles.content}>
+        <p className={styles.preferenceNote}>These choices are saved in this browser only. Dashboard widgets are not yet connected to these preferences.</p>
         <h3 className={styles.groupTitle}>Layout Options</h3>
         <ToggleSwitch 
           label="Compact Table Mode" 

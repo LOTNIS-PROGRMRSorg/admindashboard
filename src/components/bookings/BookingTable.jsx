@@ -3,15 +3,19 @@ import BookingStatusBadge from './BookingStatusBadge';
 import PaymentStatusBadge from './PaymentStatusBadge';
 import styles from './BookingTable.module.css';
 
-export default function BookingTable({ bookings, onView }) {
-  if (!bookings || bookings.length === 0) {
+function formatDate(value) {
+  if (!value) return '—';
+  return new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00.000Z`));
+}
+
+export default function BookingTable({ bookings, onView, hasActiveFilters, onClearFilters }) {
+  if (!bookings.length) {
     return (
-      <div className={styles.tableWrapper}>
-        <div className={styles.emptyState}>
-          <SearchX size={48} className={styles.emptyIcon} />
-          <h3 className={styles.emptyTitle}>No bookings found</h3>
-          <p>Try adjusting your search or filter criteria.</p>
-        </div>
+      <div className={styles.emptyState}>
+        <SearchX size={34} className={styles.emptyIcon} />
+        <h3 className={styles.emptyTitle}>No bookings match these filters</h3>
+        <p>{hasActiveFilters ? 'Try changing your search or clearing the selected filters.' : 'There are no bookings in the sample dataset.'}</p>
+        {hasActiveFilters && <button type="button" className={styles.clearButton} onClick={onClearFilters}>Clear filters</button>}
       </div>
     );
   }
@@ -19,67 +23,28 @@ export default function BookingTable({ bookings, onView }) {
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.table}>
-        <thead>
-          <tr>
-            <th className={styles.th}>Booking ID</th>
-            <th className={styles.th}>Guest</th>
-            <th className={styles.th}>Property & Host</th>
-            <th className={styles.th}>Dates</th>
-            <th className={styles.th}>Guests</th>
-            <th className={styles.th}>Amount</th>
-            <th className={styles.th}>Booking Status</th>
-            <th className={styles.th}>Payment Status</th>
-            <th className={styles.th}>Actions</th>
-          </tr>
-        </thead>
+        <thead><tr>
+          <th scope="col">Booking ID</th><th scope="col">Guest</th><th scope="col">Property / host</th>
+          <th scope="col">Stay dates</th><th scope="col">Guests</th><th scope="col">Amount</th>
+          <th scope="col">Booking status</th><th scope="col">Payment</th><th scope="col">View</th>
+        </tr></thead>
         <tbody>
           {bookings.map((booking) => (
-            <tr key={booking.id} className={styles.tr}>
-              <td className={styles.td}>
-                <span style={{ fontWeight: 600, color: 'var(--color-primary)' }}>{booking.id}</span>
-              </td>
-              <td className={styles.td}>
+            <tr key={booking.id}>
+              <td><span className={styles.bookingId}>{booking.id}</span><span className={styles.bookingDate}>Booked {formatDate(booking.bookingDate)}</span></td>
+              <td>
                 <div className={styles.guestCell}>
-                  <div className={styles.avatar}>{booking.guestAvatar}</div>
-                  <div className={styles.guestInfo}>
-                    <span className={styles.guestName}>{booking.guestName}</span>
-                    <span className={styles.guestEmail}>{booking.guestEmail}</span>
-                  </div>
+                  <div className={styles.avatar} aria-hidden="true">{booking.guestAvatar || booking.guestName?.charAt(0) || '?'}</div>
+                  <div className={styles.guestInfo}><span className={styles.guestName}>{booking.guestName}</span><span className={styles.guestEmail}>{booking.guestEmail}</span></div>
                 </div>
               </td>
-              <td className={styles.td}>
-                <div className={styles.propertyInfo}>
-                  <span className={styles.propertyName} title={booking.propertyName}>
-                    {booking.propertyName.length > 20 ? `${booking.propertyName.substring(0, 20)}...` : booking.propertyName}
-                  </span>
-                  <span className={styles.hostName}>by {booking.hostName}</span>
-                </div>
-              </td>
-              <td className={styles.td}>
-                <div className={styles.dates}>
-                  <span className={styles.dateIn}>{booking.checkInDate}</span>
-                  <span className={styles.dateOut}>{booking.checkOutDate}</span>
-                </div>
-              </td>
-              <td className={styles.td}>{booking.guestsCount}</td>
-              <td className={styles.td}><span className={styles.amount}>${booking.totalAmount}</span></td>
-              <td className={styles.td}>
-                <BookingStatusBadge status={booking.bookingStatus} />
-              </td>
-              <td className={styles.td}>
-                <PaymentStatusBadge status={booking.paymentStatus} />
-              </td>
-              <td className={styles.td}>
-                <div className={styles.actions}>
-                  <button 
-                    className={styles.iconBtn} 
-                    title="View Details"
-                    onClick={() => onView(booking)}
-                  >
-                    <Eye size={18} />
-                  </button>
-                </div>
-              </td>
+              <td><div className={styles.propertyInfo}><span className={styles.propertyName}>{booking.propertyName}</span><span className={styles.hostName}>Host: {booking.hostName}</span></div></td>
+              <td><div className={styles.dates}><span>In {formatDate(booking.checkInDate)}</span><span>Out {formatDate(booking.checkOutDate)}</span></div></td>
+              <td>{booking.guestsCount}</td>
+              <td><span className={styles.amount}>${Number(booking.totalAmount).toLocaleString('en-US')}</span></td>
+              <td><BookingStatusBadge status={booking.bookingStatus} /></td>
+              <td><PaymentStatusBadge status={booking.paymentStatus} /></td>
+              <td><button type="button" className={styles.iconBtn} aria-label={`View booking ${booking.id}`} onClick={() => onView(booking)}><Eye size={17} /></button></td>
             </tr>
           ))}
         </tbody>

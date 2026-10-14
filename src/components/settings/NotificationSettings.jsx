@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './SettingsSection.module.css';
 import ToggleSwitch from './ToggleSwitch';
+import { readLocalPreferences, writeLocalPreferences } from './localPreferences';
 
 export default function NotificationSettings({ defaultPrefs, onSave }) {
-  const [prefs, setPrefs] = useState(defaultPrefs);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('lotnis_notification_prefs');
-    if (saved) {
-      setPrefs(JSON.parse(saved));
-    }
-  }, []);
+  const [prefs, setPrefs] = useState(() => {
+    const saved = readLocalPreferences('lotnis_notification_prefs', {});
+    return {
+      email: { ...defaultPrefs.email, ...(saved.email || {}) },
+      dashboard: { ...defaultPrefs.dashboard, ...(saved.dashboard || {}) },
+    };
+  });
 
   const handleEmailChange = (key, value) => {
     setPrefs(prev => ({
@@ -27,8 +27,8 @@ export default function NotificationSettings({ defaultPrefs, onSave }) {
   };
 
   const handleSave = () => {
-    localStorage.setItem('lotnis_notification_prefs', JSON.stringify(prefs));
-    onSave && onSave('Notification preferences updated');
+    const saved = writeLocalPreferences('lotnis_notification_prefs', prefs);
+    onSave && onSave(saved ? 'Notification preferences saved in this browser' : 'Browser storage is unavailable; preferences were not saved');
   };
 
   return (
@@ -39,6 +39,7 @@ export default function NotificationSettings({ defaultPrefs, onSave }) {
       </div>
 
       <div className={styles.content}>
+        <p className={styles.preferenceNote}>These choices are saved in this browser only. Email delivery and dashboard alert services are not connected in this prototype.</p>
         <h3 className={styles.groupTitle}>Email Notifications</h3>
         <ToggleSwitch 
           label="New Booking Alerts" 

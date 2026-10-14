@@ -9,11 +9,6 @@
   flex-direction: column;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-
 .imageContainer {
   position: relative;
   height: 160px;
@@ -30,7 +25,7 @@
   position: absolute;
   top: var(--spacing-3);
   right: var(--spacing-3);
-  background-color: var(--color-danger);
+  background-color: var(--color-danger-action);
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -75,6 +70,10 @@
 .statusReview { background-color: #fef3c7; color: #92400e; }
 .statusPending { background-color: #e5e7eb; color: #4b5563; }
 
+:global([data-theme="dark"]) .statusSuspended { background: rgb(248 113 113 / 0.16); color: #fca5a5; }
+:global([data-theme="dark"]) .statusReview { background: rgb(251 191 36 / 0.16); color: #fcd34d; }
+:global([data-theme="dark"]) .statusPending { background: var(--color-bg-subtle); color: var(--color-text-muted); }
+
 .host {
   font-size: 0.875rem;
   color: var(--color-text-muted);
@@ -113,39 +112,11 @@
   margin-top: auto;
 }
 
-.actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-3);
-}
-
-.button {
-  padding: 0.5rem;
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.2s;
-  border: 1px solid transparent;
-}
-
-.buttonSecondary {
-  background-color: var(--color-bg-base);
-  color: var(--color-text-base);
-  border-color: var(--color-border);
-}
-
-.buttonSecondary:hover {
-  background-color: var(--color-bg-subtle);
-}
-
-.buttonDanger {
-  background-color: #fee2e2;
-  color: var(--color-danger);
-  border-color: #fecaca;
-}
-
-.buttonDanger:hover {
-  background-color: #fecaca;
+.unavailable {
+  margin: 0;
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
 }

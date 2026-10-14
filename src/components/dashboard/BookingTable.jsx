@@ -1,6 +1,7 @@
 import styles from './BookingTable.module.css';
+import { Link } from 'react-router-dom';
 
-export default function BookingTable({ bookings }) {
+export default function BookingTable({ bookings = [], viewAllTo }) {
   const getStatusClass = (status) => {
     switch (status) {
       case 'Confirmed': return styles.statusConfirmed;
@@ -14,10 +15,15 @@ export default function BookingTable({ bookings }) {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Recent Bookings</h3>
-        <button className={styles.viewAll}>View all</button>
+        <div>
+          <h3 className={styles.title}>Recent bookings</h3>
+          <p className={styles.subtitle}>Latest reservations in the sample dataset</p>
+        </div>
+        {viewAllTo && <Link className={styles.viewAll} to={viewAllTo}>View bookings <span aria-hidden="true">→</span></Link>}
       </div>
-      <div style={{ overflowX: 'auto' }}>
+      {bookings.length === 0 ? (
+        <div className={styles.emptyState}>There are no recent bookings to show.</div>
+      ) : <div className={styles.tableWrap}>
         <table className={styles.table}>
           <thead>
             <tr>
@@ -48,7 +54,7 @@ export default function BookingTable({ bookings }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </div>}
     </div>
   );
 }

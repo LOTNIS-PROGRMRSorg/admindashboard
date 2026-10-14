@@ -1,120 +1,304 @@
 .navbar {
   height: var(--navbar-height);
-  background-color: var(--color-bg-surface);
-  border-bottom: 1px solid var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--spacing-6);
+  min-height: var(--navbar-height);
   position: sticky;
   top: 0;
   z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 clamp(16px, 2.4vw, 32px);
+  background: color-mix(in srgb, var(--color-bg-surface) 94%, transparent);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(14px);
+}
+
+.leftSide,
+.actions,
+.profile {
+  display: flex;
+  align-items: center;
+}
+
+.leftSide {
+  min-width: 0;
+  flex: 1;
+  gap: 14px;
+}
+
+.menuBtn {
+  display: none;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-base);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg-surface);
+}
+
+.menuBtn:hover {
+  color: var(--color-primary);
+  background: var(--color-bg-subtle);
+}
+
+.searchArea {
+  position: relative;
+  width: min(360px, 100%);
 }
 
 .searchContainer {
   position: relative;
-  width: 300px;
+  display: flex;
+  align-items: center;
 }
 
 .searchIcon {
   position: absolute;
-  left: var(--spacing-3);
-  top: 50%;
-  transform: translateY(-50%);
+  left: 13px;
   color: var(--color-text-muted);
+  pointer-events: none;
 }
 
 .searchInput {
   width: 100%;
-  padding: var(--spacing-2) var(--spacing-3) var(--spacing-2) var(--spacing-10);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
-  background-color: var(--color-bg-subtle);
-  font-family: inherit;
-  font-size: 0.875rem;
+  height: 39px;
+  padding: 0 36px 0 39px;
   color: var(--color-text-base);
-  transition: var(--transition-base);
+  background: var(--color-bg-base);
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 0.82rem;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: var(--color-primary);
-  background-color: var(--color-bg-surface);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  background: var(--color-bg-surface);
+  border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.clearSearch {
+  position: absolute;
+  right: 9px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: var(--color-text-muted);
+  border-radius: 6px;
+}
+
+.clearSearch:hover {
+  color: var(--color-text-base);
+  background: var(--color-bg-subtle);
+}
+
+.searchResults {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 150;
+  padding: 5px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 11px;
+  box-shadow: var(--shadow-lg);
+}
+
+.searchResults button {
+  width: 100%;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 9px;
+  color: var(--color-text-base);
+  text-align: left;
+  border-radius: 7px;
+}
+
+.searchResults button:hover {
+  color: var(--color-primary);
+  background: var(--color-bg-subtle);
+}
+
+.searchResults button small {
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+}
+
+.searchMessage {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 4px;
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
 }
 
 .actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-4);
+  gap: 16px;
+}
+
+.notificationWrap {
+  position: relative;
 }
 
 .iconBtn {
   position: relative;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
   color: var(--color-text-muted);
-  padding: var(--spacing-2);
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition-base);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: color var(--transition-base), background var(--transition-base), border-color var(--transition-base);
 }
 
-.iconBtn:hover {
-  background-color: var(--color-bg-subtle);
-  color: var(--color-text-base);
+.iconBtn:hover,
+.iconBtnActive {
+  color: var(--color-primary);
+  background: var(--color-bg-base);
+  border-color: var(--color-border);
 }
 
 .badge {
   position: absolute;
-  top: 2px;
-  right: 4px;
-  width: 8px;
-  height: 8px;
-  background-color: var(--color-danger);
-  border-radius: var(--radius-full);
-  border: 2px solid var(--color-bg-surface);
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  background: var(--color-warning);
+  border: 1.5px solid var(--color-bg-surface);
+  border-radius: 50%;
+}
+
+.notificationPanel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -8px;
+  z-index: 150;
+  width: min(300px, calc(100vw - 32px));
+  padding: 16px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+}
+
+.notificationHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-base);
+  font-size: 0.87rem;
+}
+
+.notificationHeading span {
+  padding: 3px 7px;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg-surface));
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.notificationPanel p {
+  margin: 9px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 
 .profile {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-3);
-  cursor: pointer;
-  padding: var(--spacing-1) var(--spacing-2);
-  border-radius: var(--radius-full);
-  transition: var(--transition-base);
-}
-
-.profile:hover {
-  background-color: var(--color-bg-subtle);
+  gap: 10px;
+  padding-left: 15px;
+  border-left: 1px solid var(--color-border);
 }
 
 .avatar {
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-full);
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.875rem;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: linear-gradient(145deg, var(--color-primary-action), var(--color-primary-action-hover));
+  border-radius: 11px;
+  font-size: 0.83rem;
+  font-weight: 750;
 }
 
 .profileInfo {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .name {
-  font-size: 0.875rem;
-  font-weight: 600;
   color: var(--color-text-base);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .role {
-  font-size: 0.75rem;
   color: var(--color-text-muted);
+  font-size: 0.68rem;
+}
+
+@media (max-width: 720px) {
+  .menuBtn {
+    display: flex;
+  }
+
+  .searchArea {
+    max-width: 390px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    gap: 10px;
+    padding-inline: 12px;
+  }
+
+  .leftSide {
+    gap: 8px;
+  }
+
+  .actions {
+    gap: 6px;
+  }
+
+  .profile {
+    padding-left: 8px;
+  }
+
+  .profileInfo {
+    display: none;
+  }
+
+  .avatar {
+    width: 33px;
+    height: 33px;
+  }
+
+  .searchInput {
+    height: 36px;
+    padding-left: 34px;
+    font-size: 0.74rem;
+  }
 }

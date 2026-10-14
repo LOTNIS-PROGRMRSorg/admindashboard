@@ -31,3 +31,21 @@
 .priorityHigh { background-color: #ffedd5; color: #9a3412; }
 .priorityCritical { background-color: #fee2e2; color: #991b1b; font-weight: 600; }
 .priorityDefault { background-color: #e5e7eb; color: #4b5563; }
+
+:global([data-theme="dark"]) .categoryRed,
+:global([data-theme="dark"]) .statusEscalated,
+:global([data-theme="dark"]) .priorityCritical { background: rgb(248 113 113 / 0.16); color: #fca5a5; }
+:global([data-theme="dark"]) .categoryOrange,
+:global([data-theme="dark"]) .priorityHigh { background: rgb(251 146 60 / 0.16); color: #fdba74; }
+:global([data-theme="dark"]) .categoryGray,
+:global([data-theme="dark"]) .categoryDefault,
+:global([data-theme="dark"]) .statusRejected,
+:global([data-theme="dark"]) .statusDefault,
+:global([data-theme="dark"]) .priorityLow,
+:global([data-theme="dark"]) .priorityDefault { background: var(--color-bg-subtle); color: var(--color-text-muted); }
+:global([data-theme="dark"]) .categoryBlue { background: rgb(96 165 250 / 0.16); color: #93c5fd; }
+:global([data-theme="dark"]) .categoryPurple { background: rgb(192 132 252 / 0.16); color: #d8b4fe; }
+:global([data-theme="dark"]) .statusPending,
+:global([data-theme="dark"]) .priorityMedium { background: rgb(251 191 36 / 0.16); color: #fcd34d; }
+:global([data-theme="dark"]) .statusReview { background: rgb(129 140 248 / 0.18); color: #c7d2fe; }
+:global([data-theme="dark"]) .statusResolved { background: rgb(52 211 153 / 0.16); color: #6ee7b7; }

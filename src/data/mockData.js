@@ -26,7 +26,6 @@ export const recentActivities = [
   { id: 5, text: "Booking cancelled by user", time: "5 hours ago", type: "cancellation" },
   { id: 6, text: "New property listed in Kumasi", time: "1 day ago", type: "listing" },
 ];
-
 export const recentBookings = [
   { id: 'BK-1045', guest: 'Michael Osei', property: 'Luxury Villa Accra', date: 'Oct 24, 2026', amount: '$450', status: 'Confirmed' },
   { id: 'BK-1046', guest: 'Sarah Jenkins', property: 'Cozy Studio Kumasi', date: 'Oct 24, 2026', amount: '$120', status: 'Pending' },
@@ -312,67 +311,4 @@ export const bookingsData = [
       { time: '2026-10-10 09:05 AM', event: 'Payment of $420 processed' },
     ]
   }
-];
-
-// --- ANALYTICS DATA ---
-
-export const analyticsSummaryData = {
-  totalRevenue: { value: '$148,900', trend: 15.2, isPositive: true },
-  monthlyRevenue: { value: '$42,500', trend: 8.5, isPositive: true },
-  bookingGrowth: { value: '+18.4%', trend: 4.2, isPositive: true },
-  avgOccupancy: { value: '78%', trend: 2.1, isPositive: true },
-  activeUsers: { value: '4,820', trend: 12.3, isPositive: true },
-  avgBookingValue: { value: '$345', trend: 1.5, isPositive: true },
-  conversionRate: { value: '6.4%', trend: -0.5, isPositive: false },
-  returningGuests: { value: '32%', trend: 5.8, isPositive: true },
-};
-
-export const revenueAnalyticsData = [
-  { month: 'Jan', revenue: 28000, bookings: 120 },
-  { month: 'Feb', revenue: 32000, bookings: 145 },
-  { month: 'Mar', revenue: 38000, bookings: 180 },
-  { month: 'Apr', revenue: 36000, bookings: 170 },
-  { month: 'May', revenue: 45000, bookings: 210 },
-  { month: 'Jun', revenue: 52000, bookings: 250 },
-  { month: 'Jul', revenue: 68000, bookings: 320 }, // Peak summer
-  { month: 'Aug', revenue: 75000, bookings: 350 },
-  { month: 'Sep', revenue: 62000, bookings: 290 },
-  { month: 'Oct', revenue: 48900, bookings: 225 }, // Current
-];
-
-export const occupancyTrendsData = [
-  { name: 'Villas', value: 85, fill: '#4f46e5' },
-  { name: 'Apartments', value: 72, fill: '#10b981' },
-  { name: 'Hotels', value: 65, fill: '#f59e0b' },
-  { name: 'Guest Houses', value: 58, fill: '#6366f1' },
-];
-
-export const bookingSourcesData = [
-  { name: 'Mobile App', value: 45, fill: '#4f46e5' },
-  { name: 'Desktop Web', value: 35, fill: '#10b981' },
-  { name: 'Referral', value: 12, fill: '#f59e0b' },
-  { name: 'Direct', value: 8, fill: '#ef4444' },
-];
-
-export const popularLocationsData = [
-  { id: 1, city: 'Accra', bookings: 1245, revenue: '$85,400', growth: '+15%', occupancy: '82%' },
-  { id: 2, city: 'Kumasi', bookings: 820, revenue: '$42,100', growth: '+8%', occupancy: '75%' },
-  { id: 3, city: 'Cape Coast', bookings: 650, revenue: '$38,500', growth: '+22%', occupancy: '88%' },
-  { id: 4, city: 'Takoradi', bookings: 430, revenue: '$25,200', growth: '+5%', occupancy: '68%' },
-  { id: 5, city: 'East Legon', bookings: 390, revenue: '$45,000', growth: '+18%', occupancy: '90%' },
-];
-
-export const propertyPerformanceData = [
-  { id: 'L-106', title: 'Skyline Penthouse Suite', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=200&q=80', revenue: '$18,500', bookings: 42, rating: 5.0, occupancy: '94%' },
-  { id: 'L-101', title: 'Luxury Villa with Ocean View', image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=200&q=80', revenue: '$14,200', bookings: 45, rating: 4.9, occupancy: '88%' },
-  { id: 'L-112', title: 'Secluded Jungle Villa', image: 'https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=200&q=80', revenue: '$12,800', bookings: 19, rating: 4.7, occupancy: '85%' },
-  { id: 'L-102', title: 'Cozy Downtown Apartment', image: 'https://images.unsplash.com/photo-1502672260266-1c1e5250ad99?auto=format&fit=crop&w=200&q=80', revenue: '$8,400', bookings: 112, rating: 4.7, occupancy: '92%' },
-];
-
-export const liveActivityAnalyticsData = [
-  { id: 1, type: 'booking', text: 'New booking for Skyline Penthouse', time: '2 mins ago' },
-  { id: 2, type: 'user', text: '3 new hosts joined in the last hour', time: '15 mins ago' },
-  { id: 3, type: 'listing', text: 'Luxury Villa hit 500 lifetime views', time: '45 mins ago' },
-  { id: 4, type: 'review', text: '5-star review left by Kwame Mensah', time: '1 hour ago' },
-  { id: 5, type: 'booking', text: 'Booking cancelled for Historic Guest House', time: '2 hours ago' },
 ];

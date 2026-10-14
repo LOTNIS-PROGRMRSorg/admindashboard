@@ -121,12 +121,3 @@ export const moderationTimeline = {
     { date: '2026-06-14T09:00:00Z', action: 'Guest contacted for statement', type: 'admin' }
   ]
 };
-
-export const statsData = {
-  totalReports: 128,
-  pendingInvestigations: 42,
-  resolvedComplaints: 856,
-  flaggedListings: 46,
-  suspendedAccounts: 12,
-  highPriorityCases: 14
-};

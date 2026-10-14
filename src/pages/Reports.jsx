@@ -1,189 +1,178 @@
-import React, { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { AlertTriangle, Clock3, FileText, House } from 'lucide-react';
 import styles from './Reports.module.css';
-import pageStyles from './Page.module.css';
-
-// Components
 import StatCard from '../components/reports/StatCard';
 import Controls from '../components/reports/Controls';
 import ReportsTable from '../components/reports/ReportsTable';
 import Pagination from '../components/reports/Pagination';
 import FlaggedListingCard from '../components/reports/FlaggedListingCard';
 import ModerationModal from '../components/reports/ModerationModal';
+import ConfirmModal from '../components/users/ConfirmModal';
+import { reportsData as initialReports, flaggedListings, moderationTimeline } from '../data/reportsData';
 
-// Mock Data
-import { reportsData, flaggedListings, statsData, moderationTimeline } from '../data/reportsData';
+const ITEMS_PER_PAGE = 5;
+
+function csvCell(value) {
+  let text = String(value ?? '');
+  if (/^[=+\-@]/.test(text)) text = `'${text}`;
+  return `"${text.replaceAll('"', '""')}"`;
+}
 
 export default function Reports() {
-  // State
+  const [reports, setReports] = useState(initialReports);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [priorityFilter, setPriorityFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReport, setSelectedReport] = useState(null);
-  
-  const itemsPerPage = 5;
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
 
-  // Derived Data (Filtering)
+  const categories = useMemo(() => [...new Set(reports.map((report) => report.category).filter(Boolean))].sort(), [reports]);
   const filteredReports = useMemo(() => {
-    return reportsData.filter((report) => {
-      const matchesSearch = 
-        report.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        report.reporterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        report.reportedEntity.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesStatus = statusFilter === 'All' || report.status === statusFilter;
-
-      return matchesSearch && matchesStatus;
+    const query = searchTerm.trim().toLowerCase();
+    return reports.filter((report) => {
+      const searchableFields = [report.id, report.category, report.reporterName, report.reportedEntity, report.submittedDate, report.priority, report.status, report.assignedModerator, report.reportReason, report.notes];
+      const matchesSearch = !query || searchableFields.some((field) => String(field ?? '').toLowerCase().includes(query));
+      return matchesSearch
+        && (statusFilter === 'All' || report.status === statusFilter)
+        && (categoryFilter === 'All' || report.category === categoryFilter)
+        && (priorityFilter === 'All' || report.priority === priorityFilter);
     });
-  }, [searchTerm, statusFilter]);
+  }, [reports, searchTerm, statusFilter, categoryFilter, priorityFilter]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
-  const paginatedReports = filteredReports.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
+  const page = Math.min(currentPage, Math.max(totalPages, 1));
+  const pageReports = filteredReports.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  const hasActiveFilters = Boolean(searchTerm.trim()) || statusFilter !== 'All' || categoryFilter !== 'All' || priorityFilter !== 'All';
+  const activeReportCount = reports.filter((report) => ['Pending', 'Under Review', 'Escalated'].includes(report.status)).length;
+  const highPriorityCount = reports.filter((report) => ['High', 'Critical'].includes(report.priority)).length;
 
-  // Handlers
-  const handleExport = () => {
-    // Frontend mock export to CSV
-    const headers = ['ID', 'Category', 'Reporter', 'Entity', 'Date', 'Priority', 'Status'];
-    const csvContent = [
-      headers.join(','),
-      ...filteredReports.map(r => 
-        [r.id, r.category, `"${r.reporterName}"`, `"${r.reportedEntity}"`, r.submittedDate, r.priority, r.status].join(',')
-      )
-    ].join('\n');
+  const clearFilters = () => {
+    setSearchTerm('');
+    setStatusFilter('All');
+    setCategoryFilter('All');
+    setPriorityFilter('All');
+    setCurrentPage(1);
+  };
+  const updateFilter = (setter) => (value) => {
+    setter(value);
+    setCurrentPage(1);
+  };
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const exportReports = () => {
+    if (filteredReports.length === 0) return;
+    const columns = [
+      ['Report ID', 'id'], ['Category', 'category'], ['Reporter', 'reporterName'], ['Reported item or person', 'reportedEntity'],
+      ['Submitted at', 'submittedDate'], ['Priority', 'priority'], ['Status', 'status'], ['Assigned moderator', 'assignedModerator'],
+      ['Report reason', 'reportReason'], ['Moderator notes', 'notes'],
+    ];
+    const lines = [columns.map(([label]) => csvCell(label)).join(','), ...filteredReports.map((report) => columns.map(([, key]) => csvCell(report[key])).join(','))];
+    const blob = new Blob([`\uFEFF${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute('download', 'lotnis_reports_export.csv');
+    link.href = url;
+    link.download = 'lotnis_sample_reports_filtered.csv';
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
-  const handleViewDetails = (report) => {
+  const openDetails = (report) => {
     setSelectedReport(report);
+    setIsDetailsOpen(true);
   };
-
-  const handleCloseModal = () => {
+  const closeDetails = () => {
+    setIsDetailsOpen(false);
     setSelectedReport(null);
   };
-
-  const handleModalAction = (action, id) => {
-    const confirmMessage = `Are you sure you want to ${action} this report?`;
-    if (window.confirm(confirmMessage)) {
-      alert(`Action '${action}' performed on ID: ${id} (Mock implementation)`);
-      handleCloseModal();
-    }
+  const requestReportAction = (action, id) => {
+    setPendingAction({ action, id });
+    setIsDetailsOpen(false);
+  };
+  const closeConfirmation = () => {
+    setPendingAction(null);
+    setIsDetailsOpen(Boolean(selectedReport));
+  };
+  const confirmReportAction = () => {
+    if (!pendingAction) return;
+    const nextStatus = pendingAction.action === 'resolve' ? 'Resolved' : pendingAction.action === 'dismiss' ? 'Closed' : 'Pending';
+    const updatedReport = reports.find((report) => report.id === pendingAction.id);
+    if (!updatedReport) return;
+    const nextReport = { ...updatedReport, status: nextStatus };
+    setReports((current) => current.map((report) => report.id === nextReport.id ? nextReport : report));
+    setSelectedReport(nextReport);
+    setCurrentPage(1);
+    setPendingAction(null);
+    setIsDetailsOpen(true);
   };
 
-  const handleListingAction = (action, id) => {
-    if (action === 'view') {
-      alert(`Opening listing ${id} in a new tab...`);
-    } else {
-      if (window.confirm(`Are you sure you want to ${action} listing ${id}?`)) {
-        alert(`Listing ${id} has been suspended.`);
-      }
-    }
-  };
+  const confirmTitle = pendingAction?.action === 'resolve'
+    ? 'Mark report as resolved?'
+    : pendingAction?.action === 'dismiss'
+      ? 'Close this report?'
+      : 'Reopen this report?';
+  const confirmMessage = pendingAction?.action === 'resolve'
+    ? `Mark report ${pendingAction?.id} as resolved in the local sample data?`
+    : pendingAction?.action === 'dismiss'
+      ? `Close report ${pendingAction?.id} in the local sample data?`
+      : `Reopen report ${pendingAction?.id} as pending in the local sample data?`;
 
   return (
-    <div className={pageStyles.page}>
-      {/* Header */}
-      <div className={pageStyles.header}>
+    <div className={styles.page}>
+      <header className={styles.header}>
         <div>
-          <h1 className={pageStyles.title}>Reports & Complaints</h1>
-          <p className={pageStyles.subtitle} style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-            Monitor user complaints, flagged listings, and moderation activity across the Lotnis platform.
-          </p>
+          <p className={styles.eyebrow}>TRUST &amp; SAFETY</p>
+          <h1 className={styles.title}>Reports &amp; complaints</h1>
+          <p className={styles.subtitle}>Review the available report records and flagged listing samples.</p>
         </div>
-        <button className={styles.exportBtn} onClick={handleExport}>
-          Export Reports
+        <button type="button" className={styles.exportBtn} onClick={exportReports} disabled={!filteredReports.length}>
+          <FileText size={16} /> Export filtered reports <span>({filteredReports.length})</span>
         </button>
-      </div>
+      </header>
 
-      {/* Stats Cards */}
-      <div className={styles.statsGrid}>
-        <StatCard 
-          title="Total Reports" 
-          value={statsData.totalReports} 
-          icon={<span style={{fontSize:'1.25rem'}}>📄</span>} 
-        />
-        <StatCard 
-          title="Pending Investigations" 
-          value={statsData.pendingInvestigations} 
-          icon={<span style={{fontSize:'1.25rem'}}>🔍</span>} 
-          color="warning" 
-        />
-        <StatCard 
-          title="High Priority Cases" 
-          value={statsData.highPriorityCases} 
-          icon={<span style={{fontSize:'1.25rem'}}>⚠️</span>} 
-          color="danger" 
-        />
-        <StatCard 
-          title="Flagged Listings" 
-          value={statsData.flaggedListings} 
-          icon={<span style={{fontSize:'1.25rem'}}>🏠</span>} 
-        />
-      </div>
+      <p className={styles.sampleNote}><strong>Sample data.</strong> Counts and moderation actions below apply only to local records; they do not contact users, investigate complaints, or change live listings.</p>
 
-      {/* Main Layout: Table + Flagged Listings */}
-      <div className={styles.mainLayout}>
-        {/* Left Column: Reports Table */}
-        <div className={styles.tableSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Recent Complaints</h2>
-          </div>
-          
-          <Controls 
-            searchTerm={searchTerm}
-            onSearchChange={(val) => { setSearchTerm(val); setCurrentPage(1); }}
-            statusFilter={statusFilter}
-            onStatusFilterChange={(val) => { setStatusFilter(val); setCurrentPage(1); }}
-          />
+      <section className={styles.statsGrid} aria-label="Report counts from sample data">
+        <StatCard title="Reports in sample" value={reports.length} icon={<FileText size={20} />} />
+        <StatCard title="Open reports" value={activeReportCount} icon={<Clock3 size={20} />} color="warning" />
+        <StatCard title="High / critical priority" value={highPriorityCount} icon={<AlertTriangle size={20} />} color="danger" />
+        <StatCard title="Flagged listing samples" value={flaggedListings.length} icon={<House size={20} />} />
+      </section>
 
-          <ReportsTable 
-            data={paginatedReports} 
-            onViewDetails={handleViewDetails}
-          />
-
-          <Pagination 
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+      <section className={styles.tableSection}>
+        <div className={styles.sectionHeader}>
+          <div><h2 className={styles.sectionTitle}>Report records</h2><p className={styles.sectionHint}>{filteredReports.length} matching sample record{filteredReports.length === 1 ? '' : 's'}</p></div>
         </div>
-
-        {/* Right Column: Flagged Listings */}
-        <div className={styles.listingsSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Flagged Listings</h2>
-            <span className={styles.badgeCount}>{flaggedListings.length} Action Required</span>
-          </div>
-          <div className={styles.listingsGrid}>
-            {flaggedListings.map(listing => (
-              <FlaggedListingCard 
-                key={listing.id} 
-                listing={listing} 
-                onAction={handleListingAction}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Modal */}
-      {selectedReport && (
-        <ModerationModal 
-          report={selectedReport}
-          timelineEvents={moderationTimeline[selectedReport.id] || []}
-          onClose={handleCloseModal}
-          onAction={handleModalAction}
+        <Controls
+          searchTerm={searchTerm} onSearchChange={updateFilter(setSearchTerm)}
+          statusFilter={statusFilter} onStatusFilterChange={updateFilter(setStatusFilter)}
+          categoryFilter={categoryFilter} onCategoryFilterChange={updateFilter(setCategoryFilter)}
+          priorityFilter={priorityFilter} onPriorityFilterChange={updateFilter(setPriorityFilter)}
+          categories={categories} hasActiveFilters={hasActiveFilters} onClearFilters={clearFilters}
         />
-      )}
+        <ReportsTable data={pageReports} onViewDetails={openDetails} hasActiveFilters={hasActiveFilters} onClearFilters={clearFilters} />
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={(nextPage) => setCurrentPage(Math.max(1, Math.min(nextPage, Math.max(totalPages, 1))))} />
+      </section>
+
+      <section className={styles.listingsSection}>
+        <div className={styles.sectionHeader}>
+          <div><h2 className={styles.sectionTitle}>Flagged listings</h2><p className={styles.sectionHint}>Separate sample listing records; they are not linked to the report list.</p></div>
+          <span className={styles.badgeCount}>{flaggedListings.length} samples</span>
+        </div>
+        {flaggedListings.length ? <div className={styles.listingsGrid}>{flaggedListings.map((listing) => <FlaggedListingCard key={listing.id} listing={listing} />)}</div> : <p className={styles.noListings}>No flagged listing records are available in the sample data.</p>}
+      </section>
+
+      {isDetailsOpen && selectedReport && <ModerationModal report={selectedReport} timelineEvents={moderationTimeline[selectedReport.id] || []} onClose={closeDetails} onAction={requestReportAction} />}
+      <ConfirmModal
+        isOpen={Boolean(pendingAction)} onClose={closeConfirmation} onConfirm={confirmReportAction}
+        title={confirmTitle} message={confirmMessage}
+        note="This only updates the local sample report. No user is contacted, no investigation is performed, and no listing or account is changed."
+        confirmText={pendingAction?.action === 'resolve' ? 'Mark resolved' : pendingAction?.action === 'dismiss' ? 'Close report' : 'Reopen report'}
+        isDanger={pendingAction?.action === 'dismiss'}
+      />
     </div>
   );
 }

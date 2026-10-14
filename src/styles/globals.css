@@ -12,6 +12,7 @@ body {
   background-color: var(--color-bg-base);
   color: var(--color-text-base);
   line-height: 1.5;
+  min-width: 320px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -26,6 +27,19 @@ button {
   border: none;
   background: none;
   cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-primary) 38%, transparent);
+  outline-offset: 2px;
+}
+
+::selection {
+  color: var(--color-text-inverse);
+  background: var(--color-primary);
 }
 
 ul {

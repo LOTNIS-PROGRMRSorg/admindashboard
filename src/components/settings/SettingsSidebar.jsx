@@ -1,27 +1,29 @@
-import React from 'react';
+import { Bell, LayoutDashboard, Palette, Shield, UserRound, UserRoundCog } from 'lucide-react';
 import styles from './SettingsSidebar.module.css';
 
 const TABS = [
-  { id: 'profile', label: 'Profile Settings', icon: '👤' },
-  { id: 'account', label: 'Account Settings', icon: '⚙️' },
-  { id: 'appearance', label: 'Appearance', icon: '🎨' },
-  { id: 'dashboard', label: 'Dashboard Preferences', icon: '📊' },
-  { id: 'notifications', label: 'Notifications', icon: '🔔' },
-  { id: 'security', label: 'Security', icon: '🔒' }
+  { id: 'profile', label: 'Profile', Icon: UserRound },
+  { id: 'account', label: 'Account', Icon: UserRoundCog },
+  { id: 'appearance', label: 'Appearance', Icon: Palette },
+  { id: 'dashboard', label: 'Dashboard', Icon: LayoutDashboard },
+  { id: 'notifications', label: 'Notifications', Icon: Bell },
+  { id: 'security', label: 'Security', Icon: Shield },
 ];
 
 export default function SettingsSidebar({ activeTab, onTabChange }) {
   return (
     <div className={styles.sidebar}>
-      <nav className={styles.nav}>
-        {TABS.map((tab) => (
+      <nav className={styles.nav} aria-label="Settings sections">
+        {TABS.map(({ id, label, Icon }) => (
           <button
-            key={tab.id}
-            className={`${styles.tabBtn} ${activeTab === tab.id ? styles.active : ''}`}
-            onClick={() => onTabChange(tab.id)}
+            key={id}
+            type="button"
+            className={`${styles.tabBtn} ${activeTab === id ? styles.active : ''}`}
+            onClick={() => onTabChange(id)}
+            aria-current={activeTab === id ? 'page' : undefined}
           >
-            <span className={styles.icon}>{tab.icon}</span>
-            {tab.label}
+            <Icon className={styles.icon} size={18} aria-hidden="true" />
+            {label}
           </button>
         ))}
       </nav>

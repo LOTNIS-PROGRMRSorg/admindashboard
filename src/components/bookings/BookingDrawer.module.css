@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: var(--color-overlay);
   z-index: 200;
   display: flex;
   justify-content: flex-end;
@@ -20,7 +20,7 @@
 
 .drawer {
   width: 100%;
-  max-width: 550px;
+  max-width: min(550px, 100vw);
   height: 100vh;
   background-color: var(--color-bg-surface);
   box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
@@ -144,11 +144,11 @@
 }
 
 .btnPrimary {
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
+  background-color: var(--color-primary-action);
+  color: #fff;
 }
 .btnPrimary:hover {
-  background-color: var(--color-primary-hover);
+  background-color: var(--color-primary-action-hover);
 }
 
 .btnDanger {
@@ -175,4 +175,15 @@
 }
 .btnOutline:hover {
   background-color: var(--color-bg-subtle);
+}
+
+.footerBtn:disabled { cursor: not-allowed; opacity: 0.55; }
+
+@media (max-width: 520px) {
+  .header { padding: var(--spacing-4); }
+  .content { padding: var(--spacing-4); }
+  .section { margin-bottom: var(--spacing-6); }
+  .infoGrid { gap: var(--spacing-3); }
+  .footer { padding: var(--spacing-3) var(--spacing-4); gap: var(--spacing-2); }
+  .footerBtn { min-width: 120px; font-size: 0.8rem; }
 }

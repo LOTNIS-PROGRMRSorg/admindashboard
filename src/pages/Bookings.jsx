@@ -1,146 +1,157 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import BookingStats from '../components/bookings/BookingStats';
 import BookingFilters from '../components/bookings/BookingFilters';
 import BookingTable from '../components/bookings/BookingTable';
 import BookingDrawer from '../components/bookings/BookingDrawer';
-import ConfirmModal from '../components/users/ConfirmModal'; // Reusing
+import ConfirmModal from '../components/users/ConfirmModal';
 import Pagination from '../components/common/Pagination';
-import { bookingsData as initialBookings, bookingStatsData } from '../data/mockData';
+import { bookingsData as initialBookings } from '../data/mockData';
 import styles from './Bookings.module.css';
+
+const ITEMS_PER_PAGE = 8;
+const todayIso = () => new Date().toISOString().slice(0, 10);
+
+function matchesDateFilter(booking, filter, today) {
+  if (filter === 'All') return true;
+  if (filter === 'Upcoming') return booking.checkInDate >= today && !['Cancelled', 'Completed'].includes(booking.bookingStatus);
+  if (!booking.bookingDate) return false;
+  if (filter === 'Today') return booking.bookingDate === today;
+  if (filter === 'Last 7 Days') {
+    const start = new Date(`${today}T00:00:00.000Z`);
+    start.setUTCDate(start.getUTCDate() - 6);
+    return booking.bookingDate >= start.toISOString().slice(0, 10) && booking.bookingDate <= today;
+  }
+  if (filter === 'This Month') return booking.bookingDate.slice(0, 7) === today.slice(0, 7);
+  return true;
+}
+
+function csvCell(value) {
+  let text = String(value ?? '');
+  if (/^[=+\-@]/.test(text)) text = `'${text}`;
+  return `"${text.replaceAll('"', '""')}"`;
+}
 
 export default function Bookings() {
   const [bookings, setBookings] = useState(initialBookings);
-  
-  // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [paymentFilter, setPaymentFilter] = useState('All');
-  const [dateFilter, setDateFilter] = useState('All'); // Simple frontend mock for date ranges
-  
-  // Pagination
+  const [dateFilter, setDateFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
-
-  // Modals/Drawers
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [bookingToConfirm, setBookingToConfirm] = useState(null);
-  const [confirmActionType, setConfirmActionType] = useState(''); // 'cancel' or 'refund'
+  const [confirmActionType, setConfirmActionType] = useState('');
 
-  // Filtering Logic
+  const today = todayIso();
   const filteredBookings = useMemo(() => {
-    return bookings.filter(booking => {
-      const matchesSearch = 
-        booking.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        booking.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        booking.propertyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        booking.hostName.toLowerCase().includes(searchQuery.toLowerCase());
-      
+    const query = searchQuery.trim().toLowerCase();
+    return bookings.filter((booking) => {
+      const searchFields = [booking.id, booking.guestName, booking.guestEmail, booking.guestPhone, booking.propertyName, booking.hostName];
+      const matchesSearch = !query || searchFields.some((field) => String(field ?? '').toLowerCase().includes(query));
       const matchesStatus = statusFilter === 'All' || booking.bookingStatus === statusFilter;
       const matchesPayment = paymentFilter === 'All' || booking.paymentStatus === paymentFilter;
-      // Date filter is ignored in mock logic, assuming all mock data passes.
-      const matchesDate = true; 
-
-      return matchesSearch && matchesStatus && matchesPayment && matchesDate;
+      return matchesSearch && matchesStatus && matchesPayment && matchesDateFilter(booking, dateFilter, today);
     });
-  }, [bookings, searchQuery, statusFilter, paymentFilter, dateFilter]);
+  }, [bookings, searchQuery, statusFilter, paymentFilter, dateFilter, today]);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredBookings.length / ITEMS_PER_PAGE);
+  const page = Math.min(currentPage, Math.max(totalPages, 1));
   const paginatedBookings = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredBookings.slice(start, start + itemsPerPage);
-  }, [filteredBookings, currentPage, itemsPerPage]);
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    return filteredBookings.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredBookings, page]);
+  const hasActiveFilters = Boolean(searchQuery.trim()) || statusFilter !== 'All' || paymentFilter !== 'All' || dateFilter !== 'All';
 
-  useMemo(() => setCurrentPage(1), [searchQuery, statusFilter, paymentFilter, dateFilter]);
-
-  // CSV Export Mock
-  const handleExportCSV = () => {
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + "Booking ID,Guest Name,Property,Host,Check-in,Check-out,Amount,Booking Status,Payment Status\n"
-      + filteredBookings.map(b => `${b.id},"${b.guestName}","${b.propertyName}","${b.hostName}",${b.checkInDate},${b.checkOutDate},${b.totalAmount},${b.bookingStatus},${b.paymentStatus}`).join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "lotnis_bookings_export.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const clearFilters = () => {
+    setSearchQuery('');
+    setStatusFilter('All');
+    setPaymentFilter('All');
+    setDateFilter('All');
+    setCurrentPage(1);
+  };
+  const updateFilter = (setter) => (value) => {
+    setter(value);
+    setCurrentPage(1);
   };
 
-  // Actions
-  const handleActionClick = (action, booking) => {
+  const exportCsv = () => {
+    const columns = [
+      ['Booking ID', 'id'], ['Guest Name', 'guestName'], ['Guest Email', 'guestEmail'], ['Guest Phone', 'guestPhone'],
+      ['Property', 'propertyName'], ['Host', 'hostName'], ['Check-in Date', 'checkInDate'], ['Check-out Date', 'checkOutDate'],
+      ['Guests', 'guestsCount'], ['Total Amount', 'totalAmount'], ['Booking Status', 'bookingStatus'],
+      ['Payment Status', 'paymentStatus'], ['Booking Date', 'bookingDate'],
+    ];
+    const rows = [columns.map(([label]) => csvCell(label)).join(','), ...filteredBookings.map((booking) => columns.map(([, key]) => csvCell(booking[key])).join(','))];
+    const blob = new Blob([`\uFEFF${rows.join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `lotnis_bookings_filtered_${today}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
+
+  const requestAction = (action, booking) => {
     setBookingToConfirm(booking);
     setConfirmActionType(action);
   };
-
-  const handleConfirmAction = () => {
-    if (bookingToConfirm) {
-      setBookings(prev => prev.map(booking => {
-        if (booking.id === bookingToConfirm.id) {
-          if (confirmActionType === 'cancel') {
-            return { ...booking, bookingStatus: 'Cancelled' };
-          }
-          if (confirmActionType === 'refund') {
-            return { ...booking, paymentStatus: 'Refunded' };
-          }
-        }
-        return booking;
-      }));
-      
-      setBookingToConfirm(null);
-    }
+  const closeConfirmation = () => {
+    setBookingToConfirm(null);
+    setConfirmActionType('');
+  };
+  const confirmAction = () => {
+    if (!bookingToConfirm) return;
+    const updatedBooking = confirmActionType === 'cancel'
+      ? { ...bookingToConfirm, bookingStatus: 'Cancelled' }
+      : { ...bookingToConfirm, paymentStatus: 'Refunded' };
+    setBookings((current) => current.map((booking) => booking.id === updatedBooking.id ? updatedBooking : booking));
+    setSelectedBooking((current) => current?.id === updatedBooking.id ? { ...current, ...updatedBooking } : current);
+    closeConfirmation();
   };
 
   return (
     <div className={styles.page}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Booking Management</h1>
-        <p className={styles.subtitle}>Track and manage all reservations made across the Lotnis platform.</p>
-      </div>
+      <header className={styles.header}>
+        <div>
+          <p className={styles.eyebrow}>RESERVATION OPERATIONS</p>
+          <h1 className={styles.title}>Bookings</h1>
+          <p className={styles.subtitle}>Review reservation details and manage booking records from the sample dataset.</p>
+        </div>
+        <span className={styles.dataNote}>Sample data · actions are local only</span>
+      </header>
 
-      <BookingStats stats={bookingStatsData} />
-
-      <BookingFilters 
-        searchQuery={searchQuery} setSearchQuery={setSearchQuery}
-        statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-        paymentFilter={paymentFilter} setPaymentFilter={setPaymentFilter}
-        dateFilter={dateFilter} setDateFilter={setDateFilter}
-        onExport={handleExportCSV}
+      <BookingStats bookings={bookings} />
+      <BookingFilters
+        searchQuery={searchQuery} setSearchQuery={updateFilter(setSearchQuery)}
+        statusFilter={statusFilter} setStatusFilter={updateFilter(setStatusFilter)}
+        paymentFilter={paymentFilter} setPaymentFilter={updateFilter(setPaymentFilter)}
+        dateFilter={dateFilter} setDateFilter={updateFilter(setDateFilter)}
+        hasActiveFilters={hasActiveFilters} onClearFilters={clearFilters}
+        onExport={exportCsv} exportCount={filteredBookings.length}
       />
 
-      <BookingTable 
-        bookings={paginatedBookings} 
-        onView={(b) => setSelectedBooking(b)} 
+      <BookingTable bookings={paginatedBookings} onView={setSelectedBooking} hasActiveFilters={hasActiveFilters} onClearFilters={clearFilters} />
+      <Pagination
+        currentPage={page} totalPages={totalPages} totalItems={filteredBookings.length}
+        itemsPerPage={ITEMS_PER_PAGE}
+        onPageChange={(nextPage) => setCurrentPage(Math.max(1, Math.min(nextPage, Math.max(totalPages, 1))))}
       />
 
-      <Pagination 
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={filteredBookings.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={setCurrentPage}
+      <BookingDrawer
+        booking={selectedBooking} isOpen={Boolean(selectedBooking)}
+        onClose={() => setSelectedBooking(null)} onActionClick={requestAction}
       />
-
-      <BookingDrawer 
-        booking={selectedBooking}
-        isOpen={!!selectedBooking}
-        onClose={() => setSelectedBooking(null)}
-        onActionClick={handleActionClick}
-      />
-
-      <ConfirmModal 
-        isOpen={!!bookingToConfirm}
-        onClose={() => setBookingToConfirm(null)}
-        onConfirm={handleConfirmAction}
-        title={confirmActionType === 'cancel' ? 'Cancel Booking' : 'Refund Payment'}
-        message={
-          confirmActionType === 'cancel' 
-            ? `Are you sure you want to cancel booking ${bookingToConfirm?.id} for ${bookingToConfirm?.guestName}?`
-            : `Are you sure you want to issue a refund for booking ${bookingToConfirm?.id}?`
-        }
-        confirmText={confirmActionType === 'cancel' ? 'Cancel Booking' : 'Issue Refund'}
-        isDanger={true}
+      <ConfirmModal
+        isOpen={Boolean(bookingToConfirm)} onClose={closeConfirmation} onConfirm={confirmAction}
+        title={confirmActionType === 'cancel' ? 'Cancel this booking?' : 'Mark payment as refunded?'}
+        message={confirmActionType === 'cancel'
+          ? `Cancel booking ${bookingToConfirm?.id} for ${bookingToConfirm?.guestName}?`
+          : `Mark the payment for booking ${bookingToConfirm?.id} as refunded?`}
+        note="This only changes the local prototype record. No booking is cancelled with a provider and no payment or refund is processed."
+        confirmText={confirmActionType === 'cancel' ? 'Cancel booking' : 'Mark as refunded'}
+        isDanger
       />
     </div>
   );

@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: var(--color-overlay);
   z-index: 200;
   display: flex;
   justify-content: flex-end;
@@ -21,6 +21,7 @@
 .drawer {
   width: 100%;
   max-width: 500px;
+  max-width: min(500px, 100vw);
   height: 100vh;
   background-color: var(--color-bg-surface);
   box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
@@ -158,6 +159,18 @@
   line-height: 1.6;
 }
 
+.featuredNote, .prototypeNote {
+  margin: 0 0 var(--spacing-3);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.featuredNote { color: var(--color-primary); font-weight: 600; }
+
 .footer {
   padding: var(--spacing-4) var(--spacing-6);
   border-top: 1px solid var(--color-border);
@@ -202,4 +215,14 @@
 }
 .btnOutline:hover {
   background-color: var(--color-bg-subtle);
+}
+
+.footerBtn:disabled { cursor: not-allowed; opacity: 0.55; }
+
+@media (max-width: 520px) {
+  .header { padding: var(--spacing-4); }
+  .content { padding: var(--spacing-4); }
+  .imageContainer { height: 190px; }
+  .footer { padding: var(--spacing-3) var(--spacing-4); gap: var(--spacing-2); }
+  .footerBtn { font-size: 0.82rem; }
 }

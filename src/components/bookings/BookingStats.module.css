@@ -1,6 +1,9 @@
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--spacing-6);
-  margin-bottom: var(--spacing-6);
-}
+.statsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6); }
+.card { display: flex; align-items: center; gap: var(--spacing-4); min-width: 0; padding: var(--spacing-4) var(--spacing-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-surface); box-shadow: var(--shadow-sm); }
+.icon { display: grid; place-items: center; width: 42px; height: 42px; flex: 0 0 auto; border-radius: var(--radius-md); background: var(--color-bg-subtle); color: var(--color-primary); }
+.success { color: var(--color-success); background: rgba(16, 185, 129, 0.1); }
+.warning { color: var(--color-warning); background: rgba(245, 158, 11, 0.12); }
+.danger { color: var(--color-danger); background: rgba(239, 68, 68, 0.1); }
+.label { margin: 0 0 var(--spacing-1); color: var(--color-text-muted); font-size: 0.8rem; }
+.value { margin: 0; color: var(--color-text-base); font-size: 1.4rem; font-weight: 700; line-height: 1.2; }
+@media (max-width: 520px) { .statsGrid { gap: var(--spacing-3); } .card { gap: var(--spacing-3); padding: var(--spacing-3); } .icon { width: 36px; height: 36px; } .value { font-size: 1.2rem; } }

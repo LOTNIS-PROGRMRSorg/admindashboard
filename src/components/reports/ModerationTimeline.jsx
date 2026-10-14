@@ -1,9 +1,8 @@
-import React from 'react';
 import styles from './ModerationTimeline.module.css';
 
 export default function ModerationTimeline({ events }) {
   if (!events || events.length === 0) {
-    return <p className={styles.empty}>No timeline events found.</p>;
+    return <p className={styles.empty}>No timeline events are included in this sample report.</p>;
   }
 
   return (
@@ -14,7 +13,7 @@ export default function ModerationTimeline({ events }) {
           <div className={styles.content}>
             <p className={styles.action}>{event.action}</p>
             <span className={styles.date}>
-              {new Date(event.date).toLocaleString()}
+              {new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(new Date(event.date))} UTC
             </span>
           </div>
         </div>

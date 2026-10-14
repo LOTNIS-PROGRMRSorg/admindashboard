@@ -6,11 +6,11 @@
   border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  height: 400px; /* Fixed height for charts */
+  min-height: 342px;
 }
 
 .header {
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--spacing-3);
 }
 
 .title {
@@ -28,5 +28,27 @@
 .chartContainer {
   flex: 1;
   width: 100%;
-  min-height: 0;
+  min-height: 230px;
+}
+
+.emptyState {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  background: var(--color-bg-base);
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 540px) {
+  .card {
+    min-height: 315px;
+    padding: var(--spacing-4);
+  }
+
+  .chartContainer {
+    min-height: 215px;
+  }
 }

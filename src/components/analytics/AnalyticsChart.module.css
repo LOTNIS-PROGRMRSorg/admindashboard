@@ -1,0 +1,6 @@
+.card { display: flex; min-width: 0; min-height: 350px; flex-direction: column; padding: var(--spacing-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-surface); box-shadow: var(--shadow-sm); }
+.header { margin-bottom: var(--spacing-3); }
+.title { margin: 0 0 var(--spacing-1); color: var(--color-text-base); font-size: 1rem; font-weight: 650; }
+.subtitle { margin: 0; color: var(--color-text-muted); font-size: 0.78rem; line-height: 1.45; }
+.chartContainer { flex: 1; width: 100%; min-width: 0; min-height: 250px; }
+@media (max-width: 540px) { .card { min-height: 315px; padding: var(--spacing-4); } .chartContainer { min-height: 225px; } }

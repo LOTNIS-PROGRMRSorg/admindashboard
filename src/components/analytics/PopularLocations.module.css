@@ -1,91 +1,16 @@
-.container {
-  background-color: var(--color-bg-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
-  display: flex;
-  flex-direction: column;
-}
-
-.header {
-  padding: var(--spacing-4) var(--spacing-6);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-text-base);
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-}
-
-.item {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  padding: var(--spacing-4) var(--spacing-6);
-  border-bottom: 1px solid var(--color-border);
-  align-items: center;
-  transition: background-color 0.2s;
-}
-
-.item:last-child {
-  border-bottom: none;
-}
-
-.item:hover {
-  background-color: var(--color-bg-subtle);
-}
-
-/* Header Row for the list */
-.listHeader {
-  background-color: var(--color-bg-subtle);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: var(--spacing-2) var(--spacing-6);
-}
-
-.cell {
-  font-size: 0.875rem;
-  color: var(--color-text-base);
-}
-
-.cityCell {
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-}
-
-.rankBadge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: var(--radius-full);
-  background-color: var(--color-bg-subtle);
-  color: var(--color-text-muted);
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.rankTop {
-  background-color: rgba(79, 70, 229, 0.1);
-  color: var(--color-primary);
-}
-
-.growthCell {
-  color: var(--color-success);
-  font-weight: 500;
-}
-
-.revenueCell {
-  font-weight: 600;
-}
+.container { display: flex; min-width: 0; flex-direction: column; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-surface); box-shadow: var(--shadow-sm); }
+.header { padding: var(--spacing-4) var(--spacing-5); border-bottom: 1px solid var(--color-border); }
+.title { margin: 0 0 var(--spacing-1); color: var(--color-text-base); font-size: 1rem; font-weight: 650; }
+.subtitle { margin: 0; color: var(--color-text-muted); font-size: 0.76rem; line-height: 1.45; }
+.list { display: flex; flex-direction: column; }
+.item { display: grid; grid-template-columns: minmax(140px, 2fr) minmax(72px, 0.7fr) minmax(100px, 1fr); align-items: center; gap: var(--spacing-2); padding: var(--spacing-3) var(--spacing-5); border-bottom: 1px solid var(--color-border); }
+.item:last-child { border-bottom: 0; }
+.listHeader { background: var(--color-bg-subtle); color: var(--color-text-muted); font-size: 0.68rem; font-weight: 650; letter-spacing: 0.03em; }
+.cell { min-width: 0; color: var(--color-text-base); font-size: 0.82rem; }
+.cityCell { display: flex; align-items: center; gap: var(--spacing-2); font-weight: 600; }
+.cityCell svg { flex: 0 0 auto; color: var(--color-text-muted); }
+.rankBadge { display: grid; place-items: center; width: 23px; height: 23px; flex: 0 0 auto; border-radius: var(--radius-full); background: var(--color-bg-subtle); color: var(--color-text-muted); font-size: 0.7rem; font-weight: 700; }
+.rankTop { background: rgba(79, 70, 229, 0.1); color: var(--color-primary); }
+.amountCell { font-weight: 650; white-space: nowrap; }
+.emptyState { display: grid; min-height: 160px; place-items: center; padding: var(--spacing-5); color: var(--color-text-muted); font-size: 0.85rem; text-align: center; }
+@media (max-width: 520px) { .item { grid-template-columns: minmax(105px, 1.5fr) 60px minmax(95px, 1fr); padding: var(--spacing-3); } .header { padding: var(--spacing-4); } .cell { font-size: 0.76rem; } .listHeader { font-size: 0.62rem; } }

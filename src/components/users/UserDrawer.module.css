@@ -1,165 +1,222 @@
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  inset: 0;
   z-index: 200;
   display: flex;
   justify-content: flex-end;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.overlay.open {
-  opacity: 1;
-  pointer-events: auto;
+  background: rgb(15 23 42 / 0.38);
+  animation: fadeIn 160ms ease-out;
 }
 
 .drawer {
-  width: 100%;
-  max-width: 400px;
-  height: 100vh;
-  background-color: var(--color-bg-surface);
-  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+  width: min(100%, 440px);
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-}
-
-.overlay.open .drawer {
-  transform: translateX(0);
+  color: var(--color-text-base);
+  background: var(--color-bg-surface);
+  box-shadow: -15px 0 45px rgb(15 23 42 / 0.16);
+  animation: slideIn 210ms ease-out;
 }
 
 .header {
-  padding: var(--spacing-5) var(--spacing-6);
-  border-bottom: 1px solid var(--color-border);
+  min-height: 70px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 21px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .title {
-  font-size: 1.125rem;
-  font-weight: 600;
+  margin: 0 0 3px;
   color: var(--color-text-base);
+  font-size: 0.98rem;
+  font-weight: 750;
+}
+
+.headerCaption {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
 }
 
 .closeBtn {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
   color: var(--color-text-muted);
-  transition: color 0.2s;
-  padding: var(--spacing-1);
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
 }
 
 .closeBtn:hover {
   color: var(--color-text-base);
+  background: var(--color-bg-subtle);
 }
 
 .content {
-  padding: var(--spacing-6);
-  overflow-y: auto;
   flex: 1;
+  overflow-y: auto;
+  padding: 22px 23px;
 }
 
 .profileHeader {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: var(--spacing-6);
+  margin-bottom: 25px;
+  padding: 18px;
+  background: var(--color-bg-base);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
 }
 
 .avatarLg {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-full);
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 2rem;
-  margin-bottom: var(--spacing-3);
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg-surface));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, var(--color-border));
+  border-radius: 20px;
+  font-size: 1.55rem;
+  font-weight: 750;
 }
 
 .name {
-  font-size: 1.25rem;
-  font-weight: 700;
+  margin: 0 0 3px;
   color: var(--color-text-base);
+  font-size: 1.08rem;
+  font-weight: 750;
+  letter-spacing: -0.025em;
 }
 
 .username {
+  margin-bottom: 10px;
   color: var(--color-text-muted);
-  margin-bottom: var(--spacing-2);
+  font-size: 0.77rem;
 }
 
 .section {
-  margin-bottom: var(--spacing-6);
+  margin-bottom: 23px;
 }
 
 .sectionTitle {
-  font-size: 0.875rem;
-  font-weight: 600;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
   color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: var(--spacing-3);
   border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--spacing-2);
+  font-size: 0.65rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .infoRow {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: var(--spacing-3);
-  font-size: 0.875rem;
+  gap: 14px;
+  margin-bottom: 12px;
+  font-size: 0.77rem;
 }
 
 .infoLabel {
-  color: var(--color-text-muted);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: 7px;
+  color: var(--color-text-muted);
 }
 
 .infoValue {
-  font-weight: 500;
+  max-width: 60%;
   color: var(--color-text-base);
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .footer {
-  padding: var(--spacing-4) var(--spacing-6);
+  padding: 13px 20px 16px;
+  background: var(--color-bg-surface);
   border-top: 1px solid var(--color-border);
+}
+
+.prototypeNote {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+}
+
+.footerActions {
   display: flex;
-  gap: var(--spacing-3);
+  gap: 9px;
 }
 
 .footerBtn {
+  min-height: 38px;
   flex: 1;
-  padding: var(--spacing-2);
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  text-align: center;
-  transition: all 0.2s;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  transition: background var(--transition-base), border-color var(--transition-base);
 }
 
 .btnPrimary {
-  background-color: var(--color-primary);
   color: var(--color-text-inverse);
+  background: var(--color-primary-action);
 }
 
-.btnPrimary:hover {
-  background-color: var(--color-primary-hover);
+.btnPrimary:disabled {
+  color: var(--color-text-muted);
+  background: var(--color-bg-subtle);
+  border-color: var(--color-border);
+  cursor: not-allowed;
 }
 
 .btnOutline {
-  border: 1px solid var(--color-border);
   color: var(--color-text-base);
+  background: var(--color-bg-surface);
+  border-color: var(--color-border);
 }
 
 .btnOutline:hover {
-  background-color: var(--color-bg-subtle);
+  background: var(--color-bg-base);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(24px); }
+  to { transform: translateX(0); }
+}
+
+@media (max-width: 480px) {
+  .drawer {
+    width: 100%;
+  }
+
+  .content {
+    padding: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .drawer {
+    animation: none;
+  }
 }

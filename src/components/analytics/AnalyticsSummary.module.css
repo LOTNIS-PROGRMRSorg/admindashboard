@@ -1,6 +1,8 @@
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--spacing-6);
-  margin-bottom: var(--spacing-6);
-}
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(205px, 1fr)); gap: var(--spacing-4); margin-bottom: var(--spacing-6); }
+.card { min-width: 0; padding: var(--spacing-4) var(--spacing-5); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-surface); box-shadow: var(--shadow-sm); }
+.cardHeader { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-2); }
+.title { color: var(--color-text-muted); font-size: 0.8rem; font-weight: 600; }
+.icon { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 auto; border-radius: var(--radius-md); background: var(--color-bg-subtle); color: var(--color-primary); }
+.value { margin: var(--spacing-3) 0 var(--spacing-1); overflow-wrap: anywhere; color: var(--color-text-base); font-size: clamp(1.35rem, 2vw, 1.65rem); font-weight: 750; letter-spacing: -0.04em; line-height: 1.15; }
+.detail { margin: 0; color: var(--color-text-muted); font-size: 0.72rem; }
+@media (max-width: 520px) { .grid { gap: var(--spacing-3); } .card { padding: var(--spacing-3); } }

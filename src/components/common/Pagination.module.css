@@ -64,6 +64,6 @@
 }
 
 .pageBtn.active {
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
+  background-color: var(--color-primary-action);
+  color: #fff;
 }

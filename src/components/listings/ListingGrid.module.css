@@ -1,7 +1,7 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--spacing-6);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr));
+  gap: var(--spacing-4);
 }
 
 .emptyState {
@@ -9,13 +9,26 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-10);
+  min-height: 250px;
+  padding: var(--spacing-8);
   background-color: var(--color-bg-surface);
   border-radius: var(--radius-lg);
   border: 1px dashed var(--color-border);
   color: var(--color-text-muted);
   text-align: center;
   grid-column: 1 / -1;
+}
+
+.emptyState p { margin: 0; font-size: 0.875rem; }
+
+.clearButton {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+  color: var(--color-primary);
+  font: inherit;
+  cursor: pointer;
 }
 
 .emptyIcon {

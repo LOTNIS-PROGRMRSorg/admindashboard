@@ -1,146 +1,145 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import ListingStats from '../components/listings/ListingStats';
 import ListingFilters from '../components/listings/ListingFilters';
 import ListingGrid from '../components/listings/ListingGrid';
 import ListingTable from '../components/listings/ListingTable';
 import PropertyDrawer from '../components/listings/PropertyDrawer';
-import ConfirmModal from '../components/users/ConfirmModal'; // Reusing ConfirmModal
+import ConfirmModal from '../components/users/ConfirmModal';
 import Pagination from '../components/common/Pagination';
-import { listingsData as initialListings, listingStatsData } from '../data/mockData';
+import { listingsData as initialListings } from '../data/mockData';
 import styles from './Listings.module.css';
+
+const ITEMS_PER_PAGE = 8;
 
 export default function Listings() {
   const [listings, setListings] = useState(initialListings);
   const [viewMode, setViewMode] = useState('grid');
-  
-  // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
-  
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8; // Adjust based on grid size
-
-  // Modals/Drawers
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [propertyToConfirm, setPropertyToConfirm] = useState(null);
-  const [confirmActionType, setConfirmActionType] = useState(''); // 'approve' or 'reject'
+  const [confirmActionType, setConfirmActionType] = useState('');
 
-  // Filtering Logic
+  const categories = useMemo(
+    () => [...new Set(listings.map((listing) => listing.category).filter(Boolean))].sort(),
+    [listings],
+  );
+
   const filteredListings = useMemo(() => {
-    return listings.filter(listing => {
-      const matchesSearch = 
-        listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        listing.hostName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        listing.location.toLowerCase().includes(searchQuery.toLowerCase());
-      
+    const query = searchQuery.trim().toLowerCase();
+    return listings.filter((listing) => {
+      const searchableFields = [listing.id, listing.title, listing.hostName, listing.location];
+      const matchesSearch = !query || searchableFields.some((field) =>
+        String(field ?? '').toLowerCase().includes(query),
+      );
       const matchesStatus = statusFilter === 'All' || listing.status === statusFilter;
       const matchesCategory = categoryFilter === 'All' || listing.category === categoryFilter;
-
       return matchesSearch && matchesStatus && matchesCategory;
     });
   }, [listings, searchQuery, statusFilter, categoryFilter]);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredListings.length / ITEMS_PER_PAGE);
+  const page = Math.min(currentPage, Math.max(totalPages, 1));
   const paginatedListings = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredListings.slice(start, start + itemsPerPage);
-  }, [filteredListings, currentPage, itemsPerPage]);
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    return filteredListings.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredListings, page]);
 
-  useMemo(() => setCurrentPage(1), [searchQuery, statusFilter, categoryFilter]);
+  const resetPage = () => setCurrentPage(1);
+  const clearFilters = () => {
+    setSearchQuery('');
+    setStatusFilter('All');
+    setCategoryFilter('All');
+    resetPage();
+  };
+  const hasActiveFilters = Boolean(searchQuery.trim()) || statusFilter !== 'All' || categoryFilter !== 'All';
 
-  // Actions
-  const handleApproveClick = (property) => {
+  const requestAction = (property, action) => {
     setPropertyToConfirm(property);
-    setConfirmActionType('approve');
+    setConfirmActionType(action);
   };
 
-  const handleRejectClick = (property) => {
-    setPropertyToConfirm(property);
-    setConfirmActionType('reject');
+  const closeConfirmation = () => {
+    setPropertyToConfirm(null);
+    setConfirmActionType('');
   };
 
-  const handleConfirmAction = () => {
-    if (propertyToConfirm) {
-      setListings(prev => prev.map(listing => {
-        if (listing.id === propertyToConfirm.id) {
-          return { 
-            ...listing, 
-            status: confirmActionType === 'approve' ? 'Approved' : 'Rejected' 
-          };
-        }
-        return listing;
-      }));
-      
-      // Update selected property if it's currently open in drawer
-      if (selectedProperty && selectedProperty.id === propertyToConfirm.id) {
-        setSelectedProperty(prev => ({
-          ...prev,
-          status: confirmActionType === 'approve' ? 'Approved' : 'Rejected'
-        }));
-      }
+  const confirmAction = () => {
+    if (!propertyToConfirm) return;
+    const nextStatus = confirmActionType === 'approve' ? 'Approved' : 'Rejected';
+    setListings((current) => current.map((listing) => (
+      listing.id === propertyToConfirm.id ? { ...listing, status: nextStatus } : listing
+    )));
+    setSelectedProperty((current) => (
+      current?.id === propertyToConfirm.id ? { ...current, status: nextStatus } : current
+    ));
+    closeConfirmation();
+  };
 
-      setPropertyToConfirm(null);
-    }
+  const listingViewProps = {
+    listings: paginatedListings,
+    onView: setSelectedProperty,
+    onApprove: (property) => requestAction(property, 'approve'),
+    onReject: (property) => requestAction(property, 'reject'),
+    hasActiveFilters,
+    onClearFilters: clearFilters,
   };
 
   return (
     <div className={styles.page}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Property Listings</h1>
-        <p className={styles.subtitle}>Manage and moderate all property listings on the Lotnis platform.</p>
-      </div>
+      <header className={styles.header}>
+        <div>
+          <p className={styles.eyebrow}>PROPERTY OPERATIONS</p>
+          <h1 className={styles.title}>Property listings</h1>
+          <p className={styles.subtitle}>Review property submissions and monitor listings across the platform.</p>
+        </div>
+        <span className={styles.dataNote}>Sample data · local prototype changes only</span>
+      </header>
 
-      <ListingStats stats={listingStatsData} />
+      <ListingStats listings={listings} />
 
-      <ListingFilters 
-        searchQuery={searchQuery} setSearchQuery={setSearchQuery}
-        statusFilter={statusFilter} setStatusFilter={setStatusFilter}
-        categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter}
-        viewMode={viewMode} setViewMode={setViewMode}
+      <ListingFilters
+        searchQuery={searchQuery}
+        setSearchQuery={(value) => { setSearchQuery(value); resetPage(); }}
+        statusFilter={statusFilter}
+        setStatusFilter={(value) => { setStatusFilter(value); resetPage(); }}
+        categoryFilter={categoryFilter}
+        setCategoryFilter={(value) => { setCategoryFilter(value); resetPage(); }}
+        categories={categories}
+        hasActiveFilters={hasActiveFilters}
+        onClearFilters={clearFilters}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
       />
 
-      {viewMode === 'grid' ? (
-        <ListingGrid 
-          listings={paginatedListings} 
-          onView={(p) => setSelectedProperty(p)} 
-          onApprove={handleApproveClick}
-          onReject={handleRejectClick}
-        />
-      ) : (
-        <ListingTable 
-          listings={paginatedListings} 
-          onView={(p) => setSelectedProperty(p)}
-          onApprove={handleApproveClick}
-          onReject={handleRejectClick}
-        />
-      )}
+      {viewMode === 'grid' ? <ListingGrid {...listingViewProps} /> : <ListingTable {...listingViewProps} />}
 
-      <Pagination 
-        currentPage={currentPage}
+      <Pagination
+        currentPage={page}
         totalPages={totalPages}
         totalItems={filteredListings.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={setCurrentPage}
+        itemsPerPage={ITEMS_PER_PAGE}
+        onPageChange={(nextPage) => setCurrentPage(Math.max(1, Math.min(nextPage, Math.max(totalPages, 1))))}
       />
 
-      <PropertyDrawer 
+      <PropertyDrawer
         property={selectedProperty}
-        isOpen={!!selectedProperty}
+        isOpen={Boolean(selectedProperty)}
         onClose={() => setSelectedProperty(null)}
-        onApprove={handleApproveClick}
-        onReject={handleRejectClick}
+        onApprove={(property) => requestAction(property, 'approve')}
+        onReject={(property) => requestAction(property, 'reject')}
       />
 
-      <ConfirmModal 
-        isOpen={!!propertyToConfirm}
-        onClose={() => setPropertyToConfirm(null)}
-        onConfirm={handleConfirmAction}
-        title={confirmActionType === 'approve' ? 'Approve Listing' : 'Reject Listing'}
-        message={`Are you sure you want to ${confirmActionType} "${propertyToConfirm?.title}"?`}
-        confirmText={confirmActionType === 'approve' ? 'Approve' : 'Reject'}
+      <ConfirmModal
+        isOpen={Boolean(propertyToConfirm)}
+        onClose={closeConfirmation}
+        onConfirm={confirmAction}
+        title={confirmActionType === 'approve' ? 'Approve listing?' : 'Reject listing?'}
+        message={`Are you sure you want to ${confirmActionType} “${propertyToConfirm?.title}”?`}
+        note="This updates the local prototype only. It will not be saved to a server."
+        confirmText={confirmActionType === 'approve' ? 'Approve listing' : 'Reject listing'}
         isDanger={confirmActionType === 'reject'}
       />
     </div>

@@ -18,9 +18,14 @@
   color: var(--color-warning);
 }
 
-.rejected, .suspended {
+.rejected {
   background-color: rgba(239, 68, 68, 0.1);
   color: var(--color-danger);
+}
+
+.suspended {
+  background-color: var(--color-bg-subtle);
+  color: var(--color-text-muted);
 }
 
 .featured {

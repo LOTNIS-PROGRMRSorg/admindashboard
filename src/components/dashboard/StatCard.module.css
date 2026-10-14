@@ -1,17 +1,18 @@
 .card {
   background-color: var(--color-bg-surface);
-  border-radius: var(--radius-lg);
+  border-radius: 12px;
   box-shadow: var(--shadow-sm);
-  padding: var(--spacing-5);
+  padding: 17px 18px;
   border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-width: 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--color-primary) 25%, var(--color-border));
 }
 
 .header {
@@ -22,34 +23,38 @@
 }
 
 .title {
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.78rem;
+  font-weight: 600;
   color: var(--color-text-muted);
+  letter-spacing: 0.005em;
 }
 
 .iconWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  background-color: var(--color-bg-subtle);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background-color: color-mix(in srgb, var(--color-primary) 9%, var(--color-bg-surface));
   color: var(--color-primary);
 }
 
 .value {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: clamp(1.35rem, 2vw, 1.65rem);
+  font-weight: 750;
   color: var(--color-text-base);
   margin-bottom: var(--spacing-2);
+  letter-spacing: -0.04em;
+  line-height: 1.15;
 }
 
 .footer {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
-  font-size: 0.875rem;
+  font-size: 0.7rem;
+  flex-wrap: wrap;
 }
 
 .trend {

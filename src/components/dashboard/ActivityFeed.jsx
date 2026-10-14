@@ -1,4 +1,5 @@
 import { Building2, CalendarCheck, Clock, XCircle, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import styles from './ActivityFeed.module.css';
 
 const getIcon = (type) => {
@@ -12,14 +13,16 @@ const getIcon = (type) => {
   }
 };
 
-export default function ActivityFeed({ activities, title = "Recent Activities" }) {
+export default function ActivityFeed({ activities = [], title = "Recent Activities", viewAllTo }) {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
         <h3 className={styles.title}>{title}</h3>
-        <button className={styles.viewAll}>View all</button>
+        {viewAllTo && <Link className={styles.viewAll} to={viewAllTo}>View activity <span aria-hidden="true">→</span></Link>}
       </div>
-      <div className={styles.feed}>
+      {activities.length === 0 ? (
+        <div className={styles.emptyState}>No recent activity is available.</div>
+      ) : <div className={styles.feed}>
         {activities.map((activity) => (
           <div key={activity.id} className={styles.item}>
             <div className={`${styles.iconWrapper} ${styles[activity.type]}`}>
@@ -31,7 +34,7 @@ export default function ActivityFeed({ activities, title = "Recent Activities" }
             </div>
           </div>
         ))}
-      </div>
+      </div>}
     </div>
   );
 }
