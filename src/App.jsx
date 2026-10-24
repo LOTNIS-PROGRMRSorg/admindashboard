@@ -32,7 +32,18 @@ function ProtectedDashboard() {
   return token ? <MainLayout /> : <Login />;
 }
 
+// Supabase puts invite / reset tokens in the URL hash. If its redirect fell back to the site root (the
+// redirect URL wasn't on the allow-list), forward the hash to the screen that can use it instead of
+// showing a login form that silently ignores it.
+function forwardAuthHash() {
+  const { pathname, hash } = window.location;
+  if (!hash.includes('access_token=') || pathname === '/accept-invite') return false;
+  window.location.replace(`/accept-invite${hash}`);
+  return true;
+}
+
 function App() {
+  if (forwardAuthHash()) return null;
   return (
     <Router>
       <Routes>

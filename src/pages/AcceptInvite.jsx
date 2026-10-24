@@ -19,7 +19,7 @@ export default function AcceptInvite() {
       const response = await fetch(`${API_URL}/auth/set-password`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ password }) });
       const body = await response.json();
       if (!response.ok) throw new Error(body?.error || 'Unable to set password');
-      setAccessToken(token);
+      setAccessToken(token, hash.get('refresh_token') || undefined);
       navigate('/');
     } catch (err) {
       setError(err.message);

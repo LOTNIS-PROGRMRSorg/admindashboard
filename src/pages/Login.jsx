@@ -9,7 +9,10 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(() => {
+    try { if (sessionStorage.getItem('lotnis_admin_expired')) { sessionStorage.removeItem('lotnis_admin_expired'); return 'Your session expired, so you were signed out. Please sign in again.'; } } catch { /* ignore */ }
+    return '';
+  });
   const [busy, setBusy] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
