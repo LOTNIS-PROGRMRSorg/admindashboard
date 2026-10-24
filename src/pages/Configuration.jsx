@@ -179,6 +179,56 @@ function FeeConfigurationCard() {
   );
 }
 
+
+// Rates for events and payouts. Changing one affects FUTURE sales only: every order keeps the rate it was sold at.
+function PlatformRatesCard() {
+  const [rows, setRows] = useState([]);
+  const [values, setValues] = useState({});
+  const [busy, setBusy] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const load = () => apiFetch('/admin/config/settings').then((body) => {
+    setRows(body.data || []);
+    setValues(Object.fromEntries((body.data || []).map((r) => [r.key, String(r.value)])));
+  }).catch((err) => setError(err.message));
+  useEffect(() => { load(); }, []);
+
+  const save = async (row) => {
+    setBusy(row.key); setError(''); setMessage('');
+    try {
+      await apiFetch(`/admin/config/settings/${row.key}`, { method: 'PATCH', body: JSON.stringify({ value: Number(values[row.key]) }) });
+      setMessage(`${row.label} updated — applies to new sales from now on.`);
+      load();
+    } catch (err) { setError(err.message); } finally { setBusy(''); }
+  };
+
+  return (
+    <div className={styles.card}>
+      <h2>Events &amp; payouts</h2>
+      <p className={styles.content}>Lotnis's cut of every ticket and vote, the payment-processing fee passed on to buyers, and how long money is held before hosts are paid. Past orders keep the rate they were sold at.</p>
+      {error && <p style={{ color: 'var(--color-danger, #d33)' }}>{error}</p>}
+      {message && <p style={{ color: 'var(--color-success, #10b981)' }}>{message}</p>}
+      <div style={{ display: 'grid', gap: '0.75rem', maxWidth: 560 }}>
+        {rows.map((row) => (
+          <div key={row.key} style={{ display: 'grid', gridTemplateColumns: '1fr 110px auto', gap: '0.75rem', alignItems: 'end' }}>
+            <label style={{ display: 'grid', gap: 4, fontSize: '0.875rem', fontWeight: 600 }}>
+              {row.label}
+              <small style={{ fontWeight: 400, color: 'var(--color-text-muted)' }}>{row.description}</small>
+            </label>
+            <input type="number" min={row.min} max={row.max} step="0.01" value={values[row.key] ?? ''} onChange={(e) => setValues({ ...values, [row.key]: e.target.value })}
+              style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 8, font: 'inherit' }} />
+            <button type="button" disabled={busy === row.key || Number(values[row.key]) === row.value}
+              onClick={() => save(row)}
+              style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: 'var(--color-primary, #173b37)', color: '#fff', cursor: 'pointer', opacity: busy === row.key || Number(values[row.key]) === row.value ? 0.5 : 1 }}>
+              {busy === row.key ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CancellationPoliciesCard() {
   return (
     <div className={styles.card}>
@@ -196,6 +246,7 @@ export default function Configuration() {
       </div>
       <PropertyTypesCard />
       <FeeConfigurationCard />
+      <PlatformRatesCard />
       <CancellationPoliciesCard />
     </div>
   );

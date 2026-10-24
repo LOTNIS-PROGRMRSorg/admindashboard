@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import RefundDrawer, { RefundStatusBadge } from '../components/refunds/RefundDrawer';
 import Pagination from '../components/common/Pagination';
 import { apiFetch } from '../lib/api';
@@ -12,7 +12,7 @@ import styles from './Refunds.module.css';
 // until those modules start writing refund rows tagged with their `service`.
 const SERVICES = [
   { key: 'space_rental', label: 'Space rental' },
-  { key: 'events', label: 'Events', soon: true },
+  { key: 'events', label: 'Events', href: '/events?tab=refunds' },
   { key: 'food', label: 'Food', soon: true },
   { key: 'services', label: 'Services', soon: true },
 ];
@@ -66,7 +66,9 @@ export default function Refunds() {
       </div>
 
       <div className={styles.services} role="tablist" aria-label="Service">
-        {SERVICES.map((s) => (
+        {SERVICES.map((s) => s.href ? (
+          <Link key={s.key} to={s.href} className={styles.service}>{s.label}</Link>
+        ) : (
           <button
             key={s.key}
             role="tab"

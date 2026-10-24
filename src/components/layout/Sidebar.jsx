@@ -16,6 +16,7 @@ import {
   Undo2,
   LogOut,
   Ticket,
+  Wallet,
   UtensilsCrossed,
   Wrench
 } from 'lucide-react';
@@ -29,6 +30,8 @@ const navItems = [
   { path: '/hosts', label: 'Hosts', icon: BadgeCheck },
   { path: '/move-outs', label: 'Move-outs', icon: LogOut },
   { path: '/refunds', label: 'Refunds', icon: Undo2 },
+  { path: '/events', label: 'Events', icon: Ticket },
+  { path: '/payouts', label: 'Payouts', icon: Wallet },
   { path: '/analytics', label: 'Analytics', icon: LineChart },
   { path: '/reports', label: 'Reports', icon: FileText },
   { path: '/configuration', label: 'Configuration', icon: SlidersHorizontal },
@@ -38,7 +41,6 @@ const navItems = [
 // Business lines still to be built. They get real routes (a placeholder page
 // today) so each one can be switched on without touching navigation again.
 const upcomingItems = [
-  { path: '/events', label: 'Events', icon: Ticket },
   { path: '/food', label: 'Food', icon: UtensilsCrossed },
   { path: '/services', label: 'Services', icon: Wrench },
 ];

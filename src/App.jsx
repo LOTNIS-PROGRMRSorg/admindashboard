@@ -12,6 +12,8 @@ import Settings from './pages/Settings';
 import Configuration from './pages/Configuration';
 import Refunds from './pages/Refunds';
 import MoveOuts from './pages/MoveOuts';
+import Events from './pages/Events';
+import Payouts from './pages/Payouts';
 import Notifications from './pages/Notifications';
 import ComingSoon from './pages/ComingSoon';
 import Login from './pages/Login';
@@ -48,7 +50,8 @@ function App() {
           <Route path="refunds" element={<Refunds />} />
           <Route path="move-outs" element={<MoveOuts />} />
           <Route path="notifications" element={<Notifications />} />
-          <Route path="events" element={<ComingSoon title="Events" description="Ticketed events and venues hosted on Lotnis." />} />
+          <Route path="events" element={<Events />} />
+          <Route path="payouts" element={<Payouts />} />
           <Route path="food" element={<ComingSoon title="Food" description="Restaurants, vendors and food orders." />} />
           <Route path="services" element={<ComingSoon title="Services" description="Trusted service providers booked through Lotnis." />} />
         </Route>
