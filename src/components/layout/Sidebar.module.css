@@ -103,3 +103,16 @@
   justify-content: center;
   padding: var(--spacing-2);
 }
+
+.groupLabel {
+  display: block;
+  margin: var(--spacing-5) var(--spacing-3) var(--spacing-2);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.upcoming { opacity: 0.65; }
+.upcoming.active { opacity: 1; }

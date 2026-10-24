@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL, setAccessToken } from '../lib/api';
+import AuthShell from '../components/auth/AuthShell';
+import styles from './Auth.module.css';
 
 export default function AcceptInvite() {
   const navigate = useNavigate();
@@ -25,5 +27,15 @@ export default function AcceptInvite() {
       setBusy(false);
     }
   };
-  return <main style={{ maxWidth: 420, margin: '10vh auto', padding: 32 }}><h1>Accept Lotnis invitation</h1><p>Choose a password for your dashboard account.</p><form onSubmit={submit} style={{ display: 'grid', gap: 16 }}><label>Password<input type="password" minLength={8} required value={password} onChange={(event) => setPassword(event.target.value)} /></label>{error && <p role="alert">{error}</p>}<button disabled={busy}>{busy ? 'Saving…' : 'Set password'}</button></form></main>;
+  return (
+    <AuthShell title="Accept your invitation" subtitle="Choose a password for your Lotnis dashboard account.">
+      <form onSubmit={submit} className={styles.form}>
+        <label className={styles.field}>Password
+          <input className={styles.input} type="password" minLength={8} required autoComplete="new-password" placeholder="At least 8 characters" value={password} onChange={(event) => setPassword(event.target.value)} />
+        </label>
+        {error && <div role="alert" className={`${styles.alert} ${styles.error}`}>{error}</div>}
+        <button className={styles.submit} disabled={busy}>{busy ? 'Saving…' : 'Set password and continue'}</button>
+      </form>
+    </AuthShell>
+  );
 }

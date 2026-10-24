@@ -50,9 +50,10 @@ export default function BookingFilters({
           >
             <option value="All">All Payments</option>
             <option value="Paid">Paid</option>
-            <option value="Partially Paid">Partially Paid</option>
+            <option value="Unpaid">Unpaid</option>
+            <option value="Refund pending">Refund pending</option>
             <option value="Refunded">Refunded</option>
-            <option value="Failed">Failed</option>
+            <option value="Refund failed">Refund failed</option>
           </select>
           <select 
             className={styles.select}

@@ -143,6 +143,26 @@ export default function HostDrawer({ host, isOpen, onClose, onChanged }) {
     }
   };
 
+  const startReview = async () => {
+    setBusy(true);
+    setError('');
+    try {
+      await apiFetch(`/admin/hosts/${host.id}/start-review`, { method: 'POST' });
+      onChanged();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const flagged = reviews.filter((r) => r.status === 'rejected' || r.status === 'changes_required');
+  const queued = host.submitted_at && !host.review_started_at
+    && ['pending', 'under_review'].includes(host.verification_status) && flagged.length === 0;
+  const inReview = host.review_started_at && host.verification_status === 'under_review' && flagged.length === 0;
+  const waitingSince = host.submitted_at ? new Date(host.submitted_at).toLocaleString() : null;
+  const nudgedAt = host.last_admin_nudge_at ? new Date(host.last_admin_nudge_at).toLocaleString() : null;
+
   const reviewsByRequirement = Object.fromEntries(reviews.map((r) => [r.requirement, r]));
   const requirementList = Object.keys(REQUIREMENT_LABELS);
 
@@ -162,6 +182,24 @@ export default function HostDrawer({ host, isOpen, onClose, onChanged }) {
             <h3 className={shared.name}>{host.display_name}</h3>
             <span className={shared.username}>{host.legal_first_name} {host.legal_last_name}</span>
           </div>
+
+          {(queued || inReview || flagged.length > 0) && (
+            <div className={styles.reviewBanner}>
+              <strong>
+                {flagged.length > 0 ? 'Waiting on the host to fix flagged items'
+                  : inReview ? 'Review in progress — the host sees "being verified"'
+                  : 'In the review queue'}
+              </strong>
+              <span>
+                {waitingSince && `Submitted ${waitingSince}. `}
+                {nudgedAt && `Host reminded the team on ${nudgedAt}. `}
+                {flagged.length > 0 && `Flagged: ${flagged.map((r) => r.requirement).join(', ')}.`}
+              </span>
+              {queued && (
+                <button className={styles.statusBtn} disabled={busy} onClick={startReview}>Start review</button>
+              )}
+            </div>
+          )}
 
           <div className={shared.section}>
             <h4 className={shared.sectionTitle}>Applicant</h4>
@@ -191,7 +229,7 @@ export default function HostDrawer({ host, isOpen, onClose, onChanged }) {
                 <div className={shared.infoRow}><span className={shared.infoLabel}>Account name</span><span className={shared.infoValue}>{host.bank_account_name || '—'}</span></div>
                 <div className={shared.infoRow}><span className={shared.infoLabel}>Account #</span><span className={shared.infoValue}>{host.bank_account_number || '—'}</span></div>
               </>
-            ) : host.payout_method === 'momo' ? (
+            ) : host.payout_method === 'mobile_money' ? (
               <>
                 <div className={shared.infoRow}><span className={shared.infoLabel}>Provider</span><span className={shared.infoValue}>{host.momo_provider || '—'}</span></div>
                 <div className={shared.infoRow}><span className={shared.infoLabel}>Number</span><span className={shared.infoValue}>{host.momo_number || '—'}</span></div>

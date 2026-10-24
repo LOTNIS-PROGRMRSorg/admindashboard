@@ -10,6 +10,10 @@ import Analytics from './pages/Analytics';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Configuration from './pages/Configuration';
+import Refunds from './pages/Refunds';
+import MoveOuts from './pages/MoveOuts';
+import Notifications from './pages/Notifications';
+import ComingSoon from './pages/ComingSoon';
 import Login from './pages/Login';
 import AcceptInvite from './pages/AcceptInvite';
 import { getAccessToken, subscribeAuthChanges } from './lib/api';
@@ -41,6 +45,12 @@ function App() {
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
           <Route path="configuration" element={<Configuration />} />
+          <Route path="refunds" element={<Refunds />} />
+          <Route path="move-outs" element={<MoveOuts />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="events" element={<ComingSoon title="Events" description="Ticketed events and venues hosted on Lotnis." />} />
+          <Route path="food" element={<ComingSoon title="Food" description="Restaurants, vendors and food orders." />} />
+          <Route path="services" element={<ComingSoon title="Services" description="Trusted service providers booked through Lotnis." />} />
         </Route>
       </Routes>
     </Router>

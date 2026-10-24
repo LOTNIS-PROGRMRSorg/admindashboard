@@ -54,3 +54,5 @@
 .actionBtn:hover .iconWrapper {
   color: var(--color-primary);
 }
+
+.actionBtn { text-decoration: none; color: inherit; }

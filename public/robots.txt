@@ -1,0 +1,3 @@
+# Internal dashboard: nothing here should ever appear in search results.
+User-agent: *
+Disallow: /

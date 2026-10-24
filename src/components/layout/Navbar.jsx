@@ -1,4 +1,5 @@
-import { Search, Bell, LogOut } from 'lucide-react';
+import { Search, LogOut } from 'lucide-react';
+import NotificationBell from '../notifications/NotificationBell';
 import { clearAccessToken } from '../../lib/api';
 import styles from './Navbar.module.css';
 
@@ -15,10 +16,7 @@ export default function Navbar() {
       </div>
 
       <div className={styles.actions}>
-        <button className={styles.iconBtn} aria-label="Notifications">
-          <Bell size={20} />
-          <span className={styles.badge}></span>
-        </button>
+        <NotificationBell />
 
         <div className={styles.profile}>
           <div className={styles.avatar}>A</div>

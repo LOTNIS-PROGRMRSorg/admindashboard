@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
+import AuthShell from '../components/auth/AuthShell';
+import styles from './Auth.module.css';
 import { API_URL, setAccessToken } from '../lib/api';
 
 export default function Login() {
@@ -9,6 +12,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const submit = async (event) => {
     event.preventDefault();
     setBusy(true);
@@ -40,5 +44,25 @@ export default function Login() {
       setBusy(false);
     }
   };
-  return <main style={{ maxWidth: 420, margin: '10vh auto', padding: 32 }}><h1>Lotnis Dashboard</h1><p>Sign in with your manager invitation account.</p><form onSubmit={submit} style={{ display: 'grid', gap: 16 }}><label>Email<input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label><label>Password<input type="password" required value={password} onChange={(event) => setPassword(event.target.value)} /></label>{error && <p role="alert">{error}</p>}{resetSent && <p>If that email has dashboard access, a reset link has been sent.</p>}<button disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button><button type="button" onClick={requestReset} disabled={busy} style={{ background: 'transparent', color: 'inherit', textDecoration: 'underline' }}>Forgot password?</button></form></main>;
+  return (
+    <AuthShell title="Welcome back" subtitle="Sign in with your Lotnis dashboard account.">
+      <form onSubmit={submit} className={styles.form}>
+        <label className={styles.field}>Email
+          <input className={styles.input} type="email" required autoComplete="email" placeholder="you@lotnis.com" value={email} onChange={(event) => setEmail(event.target.value)} />
+        </label>
+        <label className={styles.field}>Password
+          <span className={styles.inputWrap}>
+            <input className={`${styles.input} ${styles.hasReveal}`} type={showPassword ? 'text' : 'password'} required autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} />
+            <button type="button" className={styles.reveal} onClick={() => setShowPassword((v) => !v)} aria-label={showPassword ? 'Hide password' : 'Show password'}>
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </span>
+        </label>
+        {error && <div role="alert" className={`${styles.alert} ${styles.error}`}>{error}</div>}
+        {resetSent && <div className={`${styles.alert} ${styles.success}`}>If that email has dashboard access, a reset link has been sent.</div>}
+        <button className={styles.submit} disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
+        <button type="button" className={styles.link} onClick={requestReset} disabled={busy}>Forgot password?</button>
+      </form>
+    </AuthShell>
+  );
 }

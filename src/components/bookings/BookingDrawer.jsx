@@ -4,8 +4,13 @@ import PaymentStatusBadge from './PaymentStatusBadge';
 import BookingTimeline from './BookingTimeline';
 import styles from './BookingDrawer.module.css';
 
-export default function BookingDrawer({ booking, isOpen, onClose, onActionClick }) {
+const money = (currency, amount) =>
+  `${currency || 'GHS'} ${Number(amount || 0).toLocaleString('en-GH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+export default function BookingDrawer({ booking, isOpen, onClose, onActionClick, onOpenRefund }) {
   if (!booking) return null;
+  const refund = booking.refund;
+  const cancellable = ['pending', 'confirmed'].includes(booking.rawStatus);
 
   return (
     <div className={`${styles.overlay} ${isOpen ? styles.open : ''}`} onClick={onClose}>
@@ -31,8 +36,8 @@ export default function BookingDrawer({ booking, isOpen, onClose, onActionClick 
                 <span className={styles.infoValue}>{booking.guestName}</span>
               </div>
               <div className={styles.infoBlock}>
-                <span className={styles.infoLabel}><User size={14}/> Guests</span>
-                <span className={styles.infoValue}>{booking.guestsCount} People</span>
+                <span className={styles.infoLabel}><Calendar size={14}/> Stay</span>
+                <span className={styles.infoValue}>{booking.stayLabel}</span>
               </div>
               <div className={styles.infoBlock}>
                 <span className={styles.infoLabel}><Mail size={14}/> Email</span>
@@ -72,10 +77,53 @@ export default function BookingDrawer({ booking, isOpen, onClose, onActionClick 
             <div className={styles.infoGrid}>
               <div className={styles.infoBlock}>
                 <span className={styles.infoLabel}><CreditCard size={14}/> Total Amount</span>
-                <span className={styles.infoValue} style={{fontSize: '1.25rem', fontWeight: 700}}>${booking.totalAmount}</span>
+                <span className={styles.infoValue} style={{fontSize: '1.25rem', fontWeight: 700}}>{money(booking.currency, booking.totalAmount)}</span>
+              </div>
+              <div className={styles.infoBlock}>
+                <span className={styles.infoLabel}><CreditCard size={14}/> Lotnis service fee</span>
+                <span className={styles.infoValue}>{money(booking.currency, booking.guestServiceFee)}</span>
+              </div>
+              <div className={styles.infoBlock}>
+                <span className={styles.infoLabel}><CreditCard size={14}/> Security deposit</span>
+                <span className={styles.infoValue}>{money(booking.currency, booking.securityDeposit)}</span>
+              </div>
+              <div className={styles.infoBlock}>
+                <span className={styles.infoLabel}><CreditCard size={14}/> Host payout</span>
+                <span className={styles.infoValue}>{money(booking.currency, booking.hostPayout)}</span>
+              </div>
+              <div className={styles.infoBlock}>
+                <span className={styles.infoLabel}><ShieldAlert size={14}/> Refund policy</span>
+                <span className={styles.infoValue} style={{textTransform: 'capitalize'}}>{booking.policy}</span>
               </div>
             </div>
           </div>
+
+          {(refund || booking.cancellationReason) && (
+            <div className={styles.section}>
+              <h4 className={styles.sectionTitle}>Cancellation &amp; refund</h4>
+              {booking.cancellationReason && <p className={styles.notes}>Reason: {booking.cancellationReason}</p>}
+              {refund && (
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoBlock}>
+                    <span className={styles.infoLabel}>Refund to guest</span>
+                    <span className={styles.infoValue}>{money(refund.currency, refund.refund_amount)}</span>
+                  </div>
+                  <div className={styles.infoBlock}>
+                    <span className={styles.infoLabel}>Refund status</span>
+                    <span className={styles.infoValue} style={{textTransform: 'capitalize'}}>{refund.status}</span>
+                  </div>
+                  <div className={styles.infoBlock}>
+                    <span className={styles.infoLabel}>Cancelled by</span>
+                    <span className={styles.infoValue} style={{textTransform: 'capitalize'}}>{refund.cancelled_by_role}, {refund.days_before_start}d before</span>
+                  </div>
+                  <div className={styles.infoBlock}>
+                    <span className={styles.infoLabel}>Policy applied</span>
+                    <span className={styles.infoValue}>{Number(refund.refund_percentage)}% of the stay</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {booking.notes && (
             <div className={styles.section}>
@@ -99,8 +147,8 @@ export default function BookingDrawer({ booking, isOpen, onClose, onActionClick 
             <MessageSquare size={16}/> Contact Guest
           </button>
           
-          {(booking.bookingStatus === 'Confirmed' || booking.bookingStatus === 'Ongoing' || booking.bookingStatus === 'Pending') && (
-            <button 
+          {cancellable && (
+            <button
               className={`${styles.footerBtn} ${styles.btnDanger}`}
               onClick={() => { onActionClick('cancel', booking); onClose(); }}
             >
@@ -108,12 +156,12 @@ export default function BookingDrawer({ booking, isOpen, onClose, onActionClick 
             </button>
           )}
 
-          {(booking.paymentStatus === 'Paid' || booking.paymentStatus === 'Partially Paid') && booking.bookingStatus !== 'Refunded' && (
-            <button 
+          {refund && (
+            <button
               className={`${styles.footerBtn} ${styles.btnWarning}`}
-              onClick={() => { onActionClick('refund', booking); onClose(); }}
+              onClick={() => { onOpenRefund(); onClose(); }}
             >
-              <ShieldAlert size={16}/> Refund Payment
+              <ShieldAlert size={16}/> {refund.status === 'processed' ? 'View refund' : 'Process refund'}
             </button>
           )}
         </div>

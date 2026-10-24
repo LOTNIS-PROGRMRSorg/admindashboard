@@ -1,4 +1,4 @@
-import { Search, Plus, LayoutGrid, List } from 'lucide-react';
+import { Search, LayoutGrid, List } from 'lucide-react';
 import styles from './ListingFilters.module.css';
 
 export default function ListingFilters({ 
@@ -22,10 +22,6 @@ export default function ListingFilters({
             />
           </div>
         </div>
-        <button className={styles.addBtn}>
-          <Plus size={18} />
-          Add Listing
-        </button>
       </div>
       
       <div className={styles.bottomRow}>

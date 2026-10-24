@@ -1,11 +1,13 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import BookingStats from '../components/bookings/BookingStats';
 import BookingFilters from '../components/bookings/BookingFilters';
 import BookingTable from '../components/bookings/BookingTable';
 import BookingDrawer from '../components/bookings/BookingDrawer';
-import ConfirmModal from '../components/users/ConfirmModal'; // Reusing
+import CancelBookingModal from '../components/bookings/CancelBookingModal';
 import Pagination from '../components/common/Pagination';
 import { apiFetch } from '../lib/api';
+import { money } from '../lib/format';
 import styles from './Bookings.module.css';
 
 const BOOKING_STATUS_LABELS = {
@@ -17,16 +19,25 @@ const BOOKING_STATUS_LABELS = {
   no_show: 'Cancelled',
 };
 
-function paymentStatusFor(status) {
-  if (['confirmed', 'active', 'completed'].includes(status)) return 'Paid';
-  if (status === 'cancelled' || status === 'no_show') return 'Refunded';
-  return 'Partially Paid';
+const UNIT_LABELS = { hour: 'Hourly', day: 'Nightly', week: 'Weekly', month: 'Monthly', year: 'Yearly' };
+
+// Payment status reflects what actually happened to the money: a refund row
+// (created when a paid booking is cancelled) takes precedence over booking status.
+function paymentStatusFor(b) {
+  if (b.refund) {
+    if (b.refund.status === 'processed') return 'Refunded';
+    if (b.refund.status === 'failed') return 'Refund failed';
+    return 'Refund pending';
+  }
+  if (['confirmed', 'active', 'completed'].includes(b.status)) return 'Paid';
+  return 'Unpaid';
 }
 
 function mapBooking(b) {
   const guestName = [b.renter?.first_name, b.renter?.last_name].filter(Boolean).join(' ') || b.renter?.email || 'Guest';
   return {
     id: b.id,
+    service: 'Space rental',
     guestName,
     guestAvatar: guestName.charAt(0).toUpperCase(),
     guestEmail: b.renter?.email || '',
@@ -35,10 +46,19 @@ function mapBooking(b) {
     hostName: b.owner_name || 'Unknown host',
     checkInDate: b.start_date,
     checkOutDate: b.end_date,
-    guestsCount: b.duration ?? 1,
+    stayLabel: `${b.duration ?? 1} day${b.duration === 1 ? '' : 's'} · ${UNIT_LABELS[b.pricing_period] || b.pricing_period || ''}`.trim(),
+    currency: b.currency_snapshot || 'GHS',
     totalAmount: b.final_amount ?? 0,
+    guestServiceFee: b.guest_service_fee ?? 0,
+    hostPayout: b.landlord_payout ?? 0,
+    securityDeposit: b.security_deposit ?? 0,
+    policy: b.cancellation_policy,
+    rawStatus: b.status,
+    cancellationReason: b.cancellation_reason,
+    cancelledAt: b.cancelled_at,
     bookingStatus: BOOKING_STATUS_LABELS[b.status] || b.status,
-    paymentStatus: paymentStatusFor(b.status),
+    paymentStatus: paymentStatusFor(b),
+    refund: b.refund || null,
     bookingDate: b.created_at,
     notes: b.owner_notes || '',
     timeline: [],
@@ -70,10 +90,11 @@ export default function Bookings() {
 
   // Modals/Drawers
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [bookingToConfirm, setBookingToConfirm] = useState(null);
-  const [confirmActionType, setConfirmActionType] = useState(''); // 'cancel' or 'refund'
+  const [bookingToCancel, setBookingToCancel] = useState(null);
+  const [notice, setNotice] = useState('');
+  const navigate = useNavigate();
 
-  useEffect(() => {
+  const load = useCallback(() => {
     apiFetch('/admin/bookings/transactions')
       .then((body) => setTransactions(body.data || []))
       .catch((error) => setTransactionError(error.message));
@@ -82,6 +103,8 @@ export default function Bookings() {
       .then((body) => setBookings((body.data || []).map(mapBooking)))
       .catch((error) => setBookingsError(error.message));
   }, []);
+
+  useEffect(load, [load]);
 
   const bookingStatsData = useMemo(() => {
     if (!bookings.length) return emptyStats;
@@ -133,8 +156,8 @@ export default function Bookings() {
   // CSV Export
   const handleExportCSV = () => {
     const csvContent = "data:text/csv;charset=utf-8," 
-      + "Booking ID,Guest Name,Property,Host,Check-in,Check-out,Amount,Booking Status,Payment Status\n"
-      + filteredBookings.map(b => `${b.id},"${b.guestName}","${b.propertyName}","${b.hostName}",${b.checkInDate},${b.checkOutDate},${b.totalAmount},${b.bookingStatus},${b.paymentStatus}`).join("\n");
+      + "Booking ID,Guest Name,Property,Host,Check-in,Check-out,Currency,Amount,Booking Status,Payment Status\n"
+      + filteredBookings.map(b => `${b.id},"${b.guestName}","${b.propertyName}","${b.hostName}",${b.checkInDate},${b.checkOutDate},${b.currency},${b.totalAmount},${b.bookingStatus},${b.paymentStatus}`).join("\n");
     
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -145,28 +168,11 @@ export default function Bookings() {
     document.body.removeChild(link);
   };
 
-  // Actions
+  // Actions — cancellation and refunds are real: the backend calculates the
+  // refund from the host's policy and queues it for processing on /refunds.
   const handleActionClick = (action, booking) => {
-    setBookingToConfirm(booking);
-    setConfirmActionType(action);
-  };
-
-  const handleConfirmAction = () => {
-    if (bookingToConfirm) {
-      setBookings(prev => prev.map(booking => {
-        if (booking.id === bookingToConfirm.id) {
-          if (confirmActionType === 'cancel') {
-            return { ...booking, bookingStatus: 'Cancelled' };
-          }
-          if (confirmActionType === 'refund') {
-            return { ...booking, paymentStatus: 'Refunded' };
-          }
-        }
-        return booking;
-      }));
-      
-      setBookingToConfirm(null);
-    }
+    if (action === 'cancel') setBookingToCancel(booking);
+    if (action === 'refund') navigate('/refunds?status=all', { state: { bookingId: booking.id } });
   };
 
   return (
@@ -175,6 +181,7 @@ export default function Bookings() {
         <h1 className={styles.title}>Booking Management</h1>
         <p className={styles.subtitle}>Track and manage all reservations made across the Lotnis platform.</p>
         {bookingsError && <p className={styles.subtitle} style={{ color: '#dc2626' }}>{bookingsError}</p>}
+        {notice && <p className={styles.subtitle} style={{ color: 'var(--color-success)' }}>{notice}</p>}
       </div>
 
       <BookingStats stats={bookingStatsData} />
@@ -206,20 +213,19 @@ export default function Bookings() {
         isOpen={!!selectedBooking}
         onClose={() => setSelectedBooking(null)}
         onActionClick={handleActionClick}
+        onOpenRefund={() => navigate('/refunds?status=all', { state: { bookingId: selectedBooking?.id } })}
       />
 
-      <ConfirmModal 
-        isOpen={!!bookingToConfirm}
-        onClose={() => setBookingToConfirm(null)}
-        onConfirm={handleConfirmAction}
-        title={confirmActionType === 'cancel' ? 'Cancel Booking' : 'Refund Payment'}
-        message={
-          confirmActionType === 'cancel' 
-            ? `Are you sure you want to cancel booking ${bookingToConfirm?.id} for ${bookingToConfirm?.guestName}?`
-            : `Are you sure you want to issue a refund for booking ${bookingToConfirm?.id}?`
-        }
-        confirmText={confirmActionType === 'cancel' ? 'Cancel Booking' : 'Issue Refund'}
-        isDanger={true}
+      <CancelBookingModal
+        booking={bookingToCancel}
+        onClose={() => setBookingToCancel(null)}
+        onCancelled={(result) => {
+          setBookingToCancel(null);
+          setNotice(result?.refund
+            ? `Booking cancelled. A refund of ${money(result.refund.currency, result.refund.refund_amount)} was queued on the Refunds page.`
+            : 'Booking cancelled. Nothing had been paid, so no refund is due.');
+          load();
+        }}
       />
     </div>
   );

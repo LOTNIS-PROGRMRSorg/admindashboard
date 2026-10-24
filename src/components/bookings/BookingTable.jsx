@@ -25,7 +25,7 @@ export default function BookingTable({ bookings, onView }) {
             <th className={styles.th}>Guest</th>
             <th className={styles.th}>Property & Host</th>
             <th className={styles.th}>Dates</th>
-            <th className={styles.th}>Guests</th>
+            <th className={styles.th}>Stay</th>
             <th className={styles.th}>Amount</th>
             <th className={styles.th}>Booking Status</th>
             <th className={styles.th}>Payment Status</th>
@@ -61,8 +61,8 @@ export default function BookingTable({ bookings, onView }) {
                   <span className={styles.dateOut}>{booking.checkOutDate}</span>
                 </div>
               </td>
-              <td className={styles.td}>{booking.guestsCount}</td>
-              <td className={styles.td}><span className={styles.amount}>${booking.totalAmount}</span></td>
+              <td className={styles.td}>{booking.stayLabel}</td>
+              <td className={styles.td}><span className={styles.amount}>{booking.currency} {Number(booking.totalAmount).toLocaleString()}</span></td>
               <td className={styles.td}>
                 <BookingStatusBadge status={booking.bookingStatus} />
               </td>
