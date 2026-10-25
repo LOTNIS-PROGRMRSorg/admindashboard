@@ -4,7 +4,7 @@ import NotificationItem from '../components/notifications/NotificationItem';
 import {
   fetchNotifications, markAllRead, markRead, notificationPath,
 } from '../lib/notifications';
-import users from './Users.module.css';
+import { Page, PageHeader, Notice } from '../components/ui';
 import styles from './Notifications.module.css';
 
 const PAGE = 30;
@@ -62,12 +62,9 @@ export default function Notifications() {
   };
 
   return (
-    <div className={users.page}>
-      <div className={users.header}>
-        <h1 className={users.title}>Notifications</h1>
-        <p className={users.subtitle}>Host verification requests, bookings and refunds that need your attention.</p>
-        {error && <p className={users.subtitle} style={{ color: 'var(--color-danger)' }}>{error}</p>}
-      </div>
+    <Page>
+      <PageHeader eyebrow="Inbox" title="Notifications" subtitle="Host verification requests, bookings, refunds, reports and payouts that need your attention." />
+      {error && <Notice tone="danger">{error}</Notice>}
 
       <div className={styles.tabs}>
         {AREAS.map((tab) => (
@@ -97,6 +94,6 @@ export default function Notifications() {
           </button>
         )}
       </div>
-    </div>
+    </Page>
   );
 }

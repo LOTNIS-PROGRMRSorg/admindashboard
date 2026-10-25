@@ -57,7 +57,7 @@ function PropertyTypesCard() {
     <div className={styles.card}>
       <h2>Property types</h2>
       <p className={styles.content}>Types guests can choose when browsing, and hosts when listing. Deactivating hides a type from new listings without affecting existing ones.</p>
-      {error && <p style={{ color: 'var(--color-danger, #d33)' }}>{error}</p>}
+      {error && <p style={{ color: 'var(--color-danger)' }}>{error}</p>}
       <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
         <thead>
           <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--color-border)' }}>
@@ -89,11 +89,11 @@ function PropertyTypesCard() {
             <option value="commercial">Commercial</option>
           </select>
         </div>
-        <button className="button" type="submit" disabled={creating || !newName.trim()} style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: 'var(--color-primary, #173b37)', color: '#fff', cursor: 'pointer' }}>
+        <button className="button" type="submit" disabled={creating || !newName.trim()} style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: 'var(--color-primary)', color: 'var(--color-text-inverse)', cursor: 'pointer' }}>
           {creating ? 'Adding…' : 'Add property type'}
         </button>
       </form>
-      {createError && <p style={{ color: 'var(--color-danger, #d33)' }}>{createError}</p>}
+      {createError && <p style={{ color: 'var(--color-danger)' }}>{createError}</p>}
     </div>
   );
 }
@@ -149,12 +149,12 @@ function FeeConfigurationCard() {
       <form onSubmit={save} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-end', flexWrap: 'wrap', marginTop: '1rem' }}>
         <FormInput label="Guest service fee (%)" type="number" value={guestFee} onChange={setGuestFee} />
         <FormInput label="Host commission (%)" type="number" value={hostFee} onChange={setHostFee} />
-        <button className="button" type="submit" disabled={saving} style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: 'var(--color-primary, #173b37)', color: '#fff', cursor: 'pointer' }}>
+        <button className="button" type="submit" disabled={saving} style={{ padding: '0.6rem 1.2rem', borderRadius: '8px', border: 'none', background: 'var(--color-primary)', color: 'var(--color-text-inverse)', cursor: 'pointer' }}>
           {saving ? 'Saving…' : 'Save new version'}
         </button>
       </form>
       {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p style={{ color: 'var(--color-danger, #d33)' }}>{error}</p>}
+      {error && <p style={{ color: 'var(--color-danger)' }}>{error}</p>}
       {history.length > 0 && (
         <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1.5rem' }}>
           <thead>
@@ -206,8 +206,8 @@ function PlatformRatesCard() {
     <div className={styles.card}>
       <h2>Events &amp; payouts</h2>
       <p className={styles.content}>Lotnis's cut of every ticket and vote, the payment-processing fee passed on to buyers, and how long money is held before hosts are paid. Past orders keep the rate they were sold at.</p>
-      {error && <p style={{ color: 'var(--color-danger, #d33)' }}>{error}</p>}
-      {message && <p style={{ color: 'var(--color-success, #10b981)' }}>{message}</p>}
+      {error && <p style={{ color: 'var(--color-danger)' }}>{error}</p>}
+      {message && <p style={{ color: 'var(--color-success)' }}>{message}</p>}
       <div style={{ display: 'grid', gap: '0.75rem', maxWidth: 560 }}>
         {rows.map((row) => (
           <div key={row.key} style={{ display: 'grid', gridTemplateColumns: '1fr 110px auto', gap: '0.75rem', alignItems: 'end' }}>
@@ -219,7 +219,7 @@ function PlatformRatesCard() {
               style={{ padding: '8px 10px', border: '1px solid var(--color-border)', borderRadius: 8, font: 'inherit' }} />
             <button type="button" disabled={busy === row.key || Number(values[row.key]) === row.value}
               onClick={() => save(row)}
-              style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: 'var(--color-primary, #173b37)', color: '#fff', cursor: 'pointer', opacity: busy === row.key || Number(values[row.key]) === row.value ? 0.5 : 1 }}>
+              style={{ padding: '8px 14px', borderRadius: 8, border: 'none', background: 'var(--color-primary)', color: 'var(--color-text-inverse)', cursor: 'pointer', opacity: busy === row.key || Number(values[row.key]) === row.value ? 0.5 : 1 }}>
               {busy === row.key ? 'Saving…' : 'Save'}
             </button>
           </div>

@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react';
-import users from './Users.module.css';
+import { Page, PageHeader } from '../components/ui';
 
 // Placeholder for business lines that are not built yet. They are deliberately
 // wired into the same shared pieces (notifications, refunds queue, bookings
@@ -7,11 +7,8 @@ import users from './Users.module.css';
 // reworking the dashboard.
 export default function ComingSoon({ title, description }) {
   return (
-    <div className={users.page}>
-      <div className={users.header}>
-        <h1 className={users.title}>{title}</h1>
-        <p className={users.subtitle}>{description}</p>
-      </div>
+    <Page>
+      <PageHeader eyebrow="Coming soon" title={title} subtitle={description} />
       <div style={{
         background: 'var(--color-bg-surface)', border: '1px dashed var(--color-border)',
         borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-8)', maxWidth: 640,
@@ -30,6 +27,6 @@ export default function ComingSoon({ title, description }) {
           ))}
         </ul>
       </div>
-    </div>
+    </Page>
   );
 }

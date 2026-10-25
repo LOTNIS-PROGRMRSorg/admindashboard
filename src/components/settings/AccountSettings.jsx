@@ -31,10 +31,10 @@ export default function AccountSettings({ profile }) {
         </div>
 
         <h3 className={styles.groupTitle} style={{ marginTop: 'var(--spacing-4)' }}>Danger Zone</h3>
-        <div style={{ padding: 'var(--spacing-4)', border: '1px solid #fecaca', borderRadius: 'var(--radius-md)', backgroundColor: '#fef2f2' }}>
+        <div style={{ padding: 'var(--spacing-4)', border: '1px solid var(--color-danger-line)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-danger-bg)' }}>
           <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--color-danger)', fontSize: '0.875rem' }}>Deactivate Account</h4>
-          <p style={{ margin: '0 0 1rem 0', fontSize: '0.875rem', color: '#991b1b' }}>Once you deactivate your account, you will lose access to the dashboard. This action requires super-admin approval.</p>
-          <button className={styles.btnSecondary} style={{ borderColor: '#fecaca', color: 'var(--color-danger)' }}>Request Deactivation</button>
+          <p style={{ margin: '0 0 1rem 0', fontSize: '0.875rem', color: 'var(--color-danger-ink)' }}>Once you deactivate your account, you will lose access to the dashboard. This action requires super-admin approval.</p>
+          <button className={styles.btnSecondary} style={{ borderColor: 'var(--color-danger-line)', color: 'var(--color-danger)' }}>Request Deactivation</button>
         </div>
       </div>
     </div>

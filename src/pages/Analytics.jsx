@@ -1,104 +1,73 @@
-import { useState, useEffect } from 'react';
-import AnalyticsHeader from '../components/analytics/AnalyticsHeader';
-import AnalyticsSummary from '../components/analytics/AnalyticsSummary';
-import RevenueCharts from '../components/analytics/RevenueCharts';
-import BookingGrowthChart from '../components/analytics/BookingGrowthChart';
-import OccupancyTrends from '../components/analytics/OccupancyTrends';
-import BookingSources from '../components/analytics/BookingSources';
-import PopularLocations from '../components/analytics/PopularLocations';
-import PropertyPerformance from '../components/analytics/PropertyPerformance';
-import ActivityFeed from '../components/dashboard/ActivityFeed'; // Reusing existing feed
-import { 
-  analyticsSummaryData, 
-  revenueAnalyticsData, 
-  occupancyTrendsData,
-  bookingSourcesData,
-  popularLocationsData,
-  propertyPerformanceData,
-  liveActivityAnalyticsData
-} from '../data/mockData';
-import styles from './Analytics.module.css';
+import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Card, ErrorState, Facts, Grid, LoadingState, Page, PageHeader, StatGrid, StatTile } from '../components/ui';
+import { colors } from '../theme';
+import { formatNumber, money } from '../lib/format';
+import { useApi } from '../lib/useApi';
 
+const axis = { fill: colors.textMuted, fontSize: 12 };
+const tip = { borderRadius: 10, border: '1px solid var(--color-border)', background: 'var(--color-bg-surface)' };
+
+/** Real numbers across the platform — money by month, refunds, payouts, events and reports. */
 export default function Analytics() {
-  const [dateRange, setDateRange] = useState('30');
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Simulate data fetching when date range changes
-  useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800); // 800ms simulated load time
-    
-    return () => clearTimeout(timer);
-  }, [dateRange]);
-
-  const handleRefresh = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-  };
-
-  const handleExportCSV = () => {
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + "Metric,Value,Trend\n"
-      + `Total Revenue,${analyticsSummaryData.totalRevenue.value},${analyticsSummaryData.totalRevenue.trend}%\n`
-      + `Monthly Revenue,${analyticsSummaryData.monthlyRevenue.value},${analyticsSummaryData.monthlyRevenue.trend}%\n`
-      + `Booking Growth,${analyticsSummaryData.bookingGrowth.value},${analyticsSummaryData.bookingGrowth.trend}%\n`
-      + `Average Occupancy,${analyticsSummaryData.avgOccupancy.value},${analyticsSummaryData.avgOccupancy.trend}%\n`
-      + `Active Users,${analyticsSummaryData.activeUsers.value},${analyticsSummaryData.activeUsers.trend}%\n`
-      + "\nTop Locations,Bookings,Revenue\n"
-      + popularLocationsData.map(l => `"${l.city}",${l.bookings},"${l.revenue}"`).join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `lotnis_analytics_export_${dateRange}d.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const overview = useApi('/admin/dashboard/overview');
+  const refunds = useApi('/admin/refunds/all/summary');
+  const payouts = useApi('/admin/payouts/overview');
+  const events = useApi('/admin/events/summary');
+  const reports = useApi('/admin/reports/summary');
+  if (overview.loading) return <Page><LoadingState /></Page>;
+  if (overview.error) return <Page><ErrorState>{overview.error}</ErrorState></Page>;
+  const { chart, totals, money: m } = overview.data;
+  const cur = m.currency;
+  const r = refunds.data, p = payouts.data, e = events.data, rp = reports.data;
 
   return (
-    <div className={styles.page}>
-      <AnalyticsHeader 
-        dateRange={dateRange} 
-        setDateRange={setDateRange} 
-        onExport={handleExportCSV}
-        onRefresh={handleRefresh}
-        isLoading={isLoading}
-      />
-
-      <div className={`${styles.dashboardGrid} ${isLoading ? styles.loadingOverlay : ''}`}>
-        
-        <AnalyticsSummary data={analyticsSummaryData} />
-
-        <div className={styles.chartsRow}>
-          <div className={styles.chartContainer}>
-            <RevenueCharts data={revenueAnalyticsData} />
+    <Page>
+      <PageHeader eyebrow="Insight" title="Analytics" subtitle="How money, bookings, events and trust are trending across the whole platform." />
+      <StatGrid>
+        <StatTile label="Paid by customers (this month)" value={money(cur, m.paid_this_month)} sub={`Stays ${money(cur, m.stays_this_month)} · Events ${money(cur, m.events_this_month)}`} />
+        <StatTile label="Lotnis earned (this month)" value={money(cur, m.commission_this_month)} tone="good" sub={`${m.commission_trend >= 0 ? '▲' : '▼'} ${Math.abs(m.commission_trend)}% vs last month`} />
+        <StatTile label="Bookings (6 months)" value={formatNumber(totals.bookings_6m)} />
+        <StatTile label="Tickets sold · votes cast" value={`${formatNumber(totals.tickets_sold)} · ${formatNumber(totals.votes_cast)}`} />
+      </StatGrid>
+      <Grid>
+        <Card title="Customers paid, by service">
+          <div style={{ height: 280 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
+                <XAxis dataKey="name" tickLine={false} axisLine={false} tick={axis} />
+                <YAxis tickLine={false} axisLine={false} width={56} tick={axis} tickFormatter={(v) => (v >= 1000 ? `${Math.round(v / 1000)}k` : v)} />
+                <Tooltip formatter={(v) => money(cur, v)} contentStyle={tip} /><Legend iconType="circle" />
+                <Bar isAnimationActive={false} dataKey="stays" name="Stays" stackId="a" fill={colors.chart1} /><Bar isAnimationActive={false} dataKey="events" name="Events" stackId="a" fill={colors.chart2} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-          <div className={styles.chartContainer}>
-            <BookingGrowthChart data={revenueAnalyticsData} />
+        </Card>
+        <Card title="What Lotnis earned">
+          <div style={{ height: 280 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
+                <XAxis dataKey="name" tickLine={false} axisLine={false} tick={axis} />
+                <YAxis tickLine={false} axisLine={false} width={56} tick={axis} />
+                <Tooltip formatter={(v) => money(cur, v)} contentStyle={tip} />
+                <Line isAnimationActive={false} type="monotone" dataKey="commission" name="Commission" stroke={colors.chart3} strokeWidth={3} dot={{ r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
-        </div>
-
-        <div className={`${styles.chartsRow} ${styles.chartsRowEqual}`}>
-          <div className={styles.chartContainerSmall}>
-            <OccupancyTrends data={occupancyTrendsData} />
-          </div>
-          <div className={styles.chartContainerSmall}>
-            <BookingSources data={bookingSourcesData} />
-          </div>
-        </div>
-
-        <div className={styles.dataRow}>
-          <PopularLocations data={popularLocationsData} />
-          <PropertyPerformance data={propertyPerformanceData} />
-          <ActivityFeed activities={liveActivityAnalyticsData} title="Live Platform Activity" />
-        </div>
-
-      </div>
-    </div>
+        </Card>
+      </Grid>
+      <Grid cols={3}>
+        <Card title="Refunds" action={{ label: 'Open', to: '/refunds' }}>
+          {r ? <Facts rows={[['To decide', `${r.stages.pending.count} · ${money(r.currency, r.stages.pending.amount)}`], ['To send', `${r.stages.sending.count} · ${money(r.currency, r.stages.sending.amount)}`], ['Sent', `${r.stages.done.count} · ${money(r.currency, r.stages.done.amount)}`], ['Still owed', money(r.currency, r.outstanding_amount)]]} /> : <LoadingState />}
+        </Card>
+        <Card title="Payouts" action={{ label: 'Open', to: '/payouts' }}>
+          {p ? <Facts rows={[['Waiting for release', money(p.currency, p.totals.awaiting_release)], ['Due now', money(p.currency, p.totals.due)], ['On hold', money(p.currency, p.totals.on_hold)], ['Paid out', money(p.currency, p.totals.paid)]]} /> : <LoadingState />}
+        </Card>
+        <Card title="Events and trust" action={{ label: 'Reports', to: '/reports' }}>
+          {e && rp ? <Facts rows={[['Events on sale', e.live], ['Waiting for review', e.pending_review], ['Open reports', rp.open], ['Urgent reports', rp.urgent]]} /> : <LoadingState />}
+        </Card>
+      </Grid>
+    </Page>
   );
 }

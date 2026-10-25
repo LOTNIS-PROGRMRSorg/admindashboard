@@ -9,12 +9,21 @@ const AREA_PATHS = {
   booking: '/bookings',
   refund: '/refunds',
   exit: '/move-outs',
+  event: '/events',
+  report: '/reports',
+  payout: '/payouts',
 };
 
+// Notifications open the thing they are about, not just its list.
 export function notificationPath(notification) {
   const area = String(notification.type || '').split('.')[0];
-  // Move-out notifications open the case itself.
-  if (area === 'exit' && notification.data?.exit_id) return `/move-outs?open=${notification.data.exit_id}`;
+  const d = notification.data || {};
+  if (area === 'exit' && d.exit_id) return `/move-outs/${d.exit_id}`;
+  if (area === 'report' && d.report_id) return `/reports/${d.report_id}`;
+  if (area === 'event' && d.event_id) return `/events/${d.event_id}`;
+  if (area === 'booking' && d.booking_id) return `/bookings/${d.booking_id}`;
+  if (area === 'host' && d.host_user_id) return `/hosts/${d.host_user_id}`;
+  if (area === 'refund' && d.refund_id) return `/refunds/${d.service === 'event' ? 'event' : 'accommodation'}/${d.refund_id}`;
   return AREA_PATHS[area] || '/notifications';
 }
 

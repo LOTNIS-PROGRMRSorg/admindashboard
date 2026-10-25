@@ -118,7 +118,7 @@ export default function Settings() {
       case 'security':
         return <SecuritySettings onSave={handleSaveNotification} />;
       default:
-        return <ProfileSettings profile={adminProfile} onSave={handleSaveNotification} />;
+        return <ProfileSettings profile={profile} onSave={handleSaveNotification} />;
     }
   };
 

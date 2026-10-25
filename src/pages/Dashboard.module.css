@@ -1,47 +1,20 @@
-.dashboard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-6);
-}
-
-.welcomeSection {
-  margin-bottom: var(--spacing-2);
-}
-
-.welcomeTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-text-base);
-  margin-bottom: var(--spacing-1);
-}
-
-.welcomeText {
-  color: var(--color-text-muted);
-  font-size: 0.875rem;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--spacing-6);
-}
-
-.middleSection {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--spacing-6);
-}
-
-.bottomSection {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--spacing-6);
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .middleSection,
-  .bottomSection {
-    grid-template-columns: 1fr;
-  }
-}
+.queueList { display: flex; flex-direction: column; }
+.queueRow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-top: 1px solid var(--color-border); text-decoration: none; color: var(--color-text-base); font-size: 0.9rem; }
+.queueRow:first-child { border-top: 0; }
+.queueRow:hover .queueLabel { color: var(--color-primary); }
+.queueLabel { font-weight: 600; }
+.queueCount { min-width: 28px; text-align: center; padding: 2px 9px; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 700; background: var(--color-bg-subtle); color: var(--color-text-muted); }
+.queueCountHot { background: var(--color-danger-bg); color: var(--color-danger-ink); }
+.queueCountWarn { background: var(--color-warning-bg); color: var(--color-warning-ink); }
+.allClear { color: var(--color-success-ink); font-weight: 600; font-size: 0.9rem; }
+.chart { height: 280px; }
+.activity { display: flex; flex-direction: column; }
+.activityRow { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--color-border); text-decoration: none; color: inherit; font-size: 0.88rem; }
+.activityRow:first-child { border-top: 0; }
+a.activityRow:hover .activityText { color: var(--color-primary); }
+.activityIcon { width: 34px; height: 34px; border-radius: var(--radius-full); display: grid; place-items: center; background: var(--color-bg-subtle); color: var(--color-text-muted); }
+.activityText { color: var(--color-text-base); }
+.activityWhen { color: var(--color-text-muted); font-size: 0.76rem; }
+.activityAmount { font-weight: 700; white-space: nowrap; }
+.legend { display: flex; gap: 14px; font-size: 0.8rem; color: var(--color-text-muted); }
+.legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; background: var(--dot); }

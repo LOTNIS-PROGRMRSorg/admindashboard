@@ -43,11 +43,13 @@ function adminExtra(path) {
   if (path === '/admin/config/settings') return ok([{ key: 'event_ticket_commission_percent', label: 'Ticket commission (%)', value: 7, min: 0, max: 50, description: 'Lotnis commission on each ticket' }, { key: 'event_vote_commission_percent', label: 'Vote commission (%)', value: 7, min: 0, max: 50, description: 'Lotnis commission on each vote' }, { key: 'processing_fee_percent', label: 'Processing fee passed to buyers (%)', value: 1.95, min: 0, max: 10, description: 'Added to the buyer total' }, { key: 'event_payout_hold_hours', label: 'Event payout hold (hours)', value: 48, min: 0, max: 720, description: 'After the event ends' }, { key: 'stay_report_window_hours', label: 'Stay problem-report window (hours)', value: 48, min: 24, max: 168, description: 'After check-in' }]);
   return undefined;
 }
+import { handleAdmin } from './devMockAdmin';
 const realFetch = window.fetch.bind(window);
 window.fetch = async (input, init) => {
   const url = typeof input === 'string' ? input : input.url;
   if (!url.startsWith(API)) return realFetch(input, init);
   const path = url.slice(API.length).split('?')[0];
+  const platform = handleAdmin(path); if (platform) return platform;
   const extra = adminExtra(path); if (extra) return extra;
   if (path === '/admin/exits') return ok([mkExit('x1', 'in_dispute', { has_dispute: true }), mkExit('x2', 'notice_given', { guest_name: 'Esi Boateng', host_name: 'Yaw Darko' }), mkExit('x3', 'moved_out', { guest_name: 'Nana Agyei' })]);
   if (path.startsWith('/admin/exits/')) return ok(detail);

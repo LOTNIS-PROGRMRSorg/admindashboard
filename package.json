@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/generate-tokens.mjs --check && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tokens": "node scripts/generate-tokens.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.16.0",

@@ -130,15 +130,15 @@
   width: 100px;
   height: 70px;
   border-radius: var(--radius-md);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
 
-.previewLight { background-color: #f9fafb; }
-.previewDark { background-color: #111827; border-color: #374151; }
+.previewLight { background-color: var(--color-bg-base); }
+.previewDark { background-color: var(--color-preview-dark-bg); border-color: var(--color-preview-dark-border); }
 
 .previewSystem {
   background-color: var(--color-bg-subtle);
@@ -153,8 +153,8 @@
 }
 
 .previewDark .previewHeader {
-  background-color: #1f2937;
-  border-color: #374151;
+  background-color: var(--color-preview-dark-surface);
+  border-color: var(--color-preview-dark-border);
 }
 
 .previewBody {
@@ -169,8 +169,8 @@
 }
 
 .previewDark .previewSidebar {
-  background-color: #1f2937;
-  border-color: #374151;
+  background-color: var(--color-preview-dark-surface);
+  border-color: var(--color-preview-dark-border);
 }
 
 .previewContent {

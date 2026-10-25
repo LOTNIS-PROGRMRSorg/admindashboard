@@ -11,11 +11,11 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 48px 56px;
-  color: #fff;
+  color: var(--color-text-inverse);
   background:
     radial-gradient(circle at 15% 10%, rgba(255, 255, 255, 0.16), transparent 45%),
     radial-gradient(circle at 85% 90%, rgba(99, 102, 241, 0.55), transparent 50%),
-    linear-gradient(145deg, #312e81 0%, #4f46e5 55%, #6366f1 100%);
+    linear-gradient(145deg, var(--color-primary-ink) 0%, var(--color-primary) 55%, var(--color-primary) 100%);
   overflow: hidden;
 }
 
@@ -26,7 +26,7 @@
   backdrop-filter: blur(6px);
 }
 
-.pitch h2 { color: #fff; font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.15; letter-spacing: -0.03em; margin: 0 0 16px; font-weight: 700; }
+.pitch h2 { color: var(--color-text-inverse); font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.15; letter-spacing: -0.03em; margin: 0 0 16px; font-weight: 700; }
 .pitch p { color: rgba(255, 255, 255, 0.8); max-width: 420px; line-height: 1.6; margin: 0 0 32px; }
 .points { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
 .points li { display: flex; align-items: center; gap: 12px; color: rgba(255, 255, 255, 0.92); font-size: 0.9375rem; }

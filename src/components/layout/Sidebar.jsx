@@ -22,20 +22,17 @@ import {
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
-const navItems = [
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/users', label: 'Users', icon: Users },
-  { path: '/listings', label: 'Listings', icon: Building2 },
-  { path: '/events', label: 'Events', icon: Ticket },
-  { path: '/bookings', label: 'Bookings', icon: CalendarCheck },
-  { path: '/hosts', label: 'Hosts', icon: BadgeCheck },
-  { path: '/move-outs', label: 'Move-outs', icon: LogOut },
-  { path: '/refunds', label: 'Refunds', icon: Undo2 },
-  { path: '/payouts', label: 'Payouts', icon: Wallet },
-  { path: '/analytics', label: 'Analytics', icon: LineChart },
-  { path: '/reports', label: 'Reports', icon: FileText },
-  { path: '/configuration', label: 'Configuration', icon: SlidersHorizontal },
-  { path: '/settings', label: 'Settings', icon: Settings },
+// Grouped the way the work is: who, what they sell, money, and trust. Every area that exists is linked here.
+const navGroups = [
+  { label: null, items: [{ path: '/', label: 'Dashboard', icon: LayoutDashboard }] },
+  { label: 'People', items: [{ path: '/users', label: 'Users', icon: Users }, { path: '/hosts', label: 'Hosts', icon: BadgeCheck }] },
+  { label: 'Accommodation', items: [
+    { path: '/listings', label: 'Listings', icon: Building2 }, { path: '/bookings', label: 'Bookings', icon: CalendarCheck }, { path: '/move-outs', label: 'Move-outs', icon: LogOut },
+  ] },
+  { label: 'Events', items: [{ path: '/events', label: 'Events', icon: Ticket }] },
+  { label: 'Money', items: [{ path: '/refunds', label: 'Refunds', icon: Undo2 }, { path: '/payouts', label: 'Payouts', icon: Wallet }] },
+  { label: 'Trust & insight', items: [{ path: '/reports', label: 'Reports', icon: FileText }, { path: '/analytics', label: 'Analytics', icon: LineChart }] },
+  { label: 'Admin', items: [{ path: '/configuration', label: 'Configuration', icon: SlidersHorizontal }, { path: '/settings', label: 'Settings', icon: Settings }] },
 ];
 
 // Business lines still to be built. They get real routes (a placeholder page
@@ -72,17 +69,21 @@ export default function Sidebar() {
       </div>
 
       <nav className={styles.nav}>
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => 
-              `${styles.navLink} ${isActive ? styles.active : ''}`
-            }
-          >
-            <item.icon size={20} className={styles.icon} />
-            <span className={styles.label}>{item.label}</span>
-          </NavLink>
+        {navGroups.map((group) => (
+          <div key={group.label ?? 'top'} className={styles.group}>
+            {group.label && !collapsed && <span className={styles.groupLabel}>{group.label}</span>}
+            {group.items.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                end={item.path === '/'}
+                className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
+              >
+                <item.icon size={20} className={styles.icon} />
+                <span className={styles.label}>{item.label}</span>
+              </NavLink>
+            ))}
+          </div>
         ))}
 
         {!collapsed && <span className={styles.groupLabel}>Coming soon</span>}

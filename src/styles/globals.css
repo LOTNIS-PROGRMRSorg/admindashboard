@@ -43,3 +43,6 @@ p {
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-4);
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.9s linear infinite; }

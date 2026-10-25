@@ -35,7 +35,7 @@
 }
 
 .tabBtn.active {
-  background-color: #e0e7ff; /* light primary */
+  background-color: var(--color-primary-soft); /* light primary */
   color: var(--color-primary);
 }
 
