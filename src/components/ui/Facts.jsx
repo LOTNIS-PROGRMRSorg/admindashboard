@@ -4,9 +4,14 @@ import styles from './ui.module.css';
 export default function Facts({ rows }) {
   return (
     <dl className={styles.facts}>
-      {rows.filter(([, v]) => v !== null && v !== undefined && v !== '' && v !== false).map(([label, value]) => (
-        <div key={label} style={{ display: 'contents' }}><dt>{label}</dt><dd>{value}</dd></div>
-      ))}
+      {rows
+        .filter(([, v]) => v !== null && v !== undefined && v !== '' && v !== false)
+        .map(([label, value]) => (
+          <div key={label} style={{ display: 'contents' }}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
     </dl>
   );
 }

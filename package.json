@@ -8,7 +8,9 @@
     "build": "node scripts/generate-tokens.mjs --check && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "tokens": "node scripts/generate-tokens.mjs"
+    "tokens": "node scripts/generate-tokens.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "lucide-react": "^1.16.0",
@@ -27,6 +29,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "prettier": "^3.9.10",
     "vite": "^8.0.12"
   }
 }

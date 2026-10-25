@@ -40,7 +40,7 @@
 }
 
 /* For Dark mode adjustment specifically if needed */
-:global([data-theme="dark"]) .tabBtn.active {
+:global([data-theme='dark']) .tabBtn.active {
   background-color: rgba(79, 70, 229, 0.2);
 }
 

@@ -1,4 +1,10 @@
-.tabs { display: flex; gap: var(--spacing-2); flex-wrap: wrap; margin-bottom: var(--spacing-4); align-items: center; }
+.tabs {
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-4);
+  align-items: center;
+}
 .tab {
   padding: 6px 14px;
   border-radius: var(--radius-full);
@@ -8,14 +14,33 @@
   font-size: 0.8125rem;
   font-weight: 600;
 }
-.tabActive { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-text-inverse); }
-.spacer { flex: 1; }
+.tabActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+.spacer {
+  flex: 1;
+}
 .card {
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
-.empty { padding: var(--spacing-10) var(--spacing-4); text-align: center; color: var(--color-text-muted); }
-.more { display: block; width: 100%; padding: var(--spacing-3); color: var(--color-primary); font-weight: 600; font-size: 0.875rem; }
-.more:hover { background: var(--color-bg-subtle); }
+.empty {
+  padding: var(--spacing-10) var(--spacing-4);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+.more {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-3);
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.more:hover {
+  background: var(--color-bg-subtle);
+}

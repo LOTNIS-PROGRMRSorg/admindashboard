@@ -8,11 +8,7 @@ export default function Navbar() {
     <header className={styles.navbar}>
       <div className={styles.searchContainer}>
         <Search size={18} className={styles.searchIcon} />
-        <input 
-          type="text" 
-          placeholder="Search listings, users..." 
-          className={styles.searchInput}
-        />
+        <input type="text" placeholder="Search listings, users..." className={styles.searchInput} />
       </div>
 
       <div className={styles.actions}>

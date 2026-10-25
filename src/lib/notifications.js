@@ -23,7 +23,8 @@ export function notificationPath(notification) {
   if (area === 'event' && d.event_id) return `/events/${d.event_id}`;
   if (area === 'booking' && d.booking_id) return `/bookings/${d.booking_id}`;
   if (area === 'host' && d.host_user_id) return `/hosts/${d.host_user_id}`;
-  if (area === 'refund' && d.refund_id) return `/refunds/${d.service === 'event' ? 'event' : 'accommodation'}/${d.refund_id}`;
+  if (area === 'refund' && d.refund_id)
+    return `/refunds/${d.service === 'event' ? 'event' : 'accommodation'}/${d.refund_id}`;
   return AREA_PATHS[area] || '/notifications';
 }
 
@@ -52,8 +53,7 @@ export const fetchNotifications = (params = {}) => {
 export const fetchUnreadCount = () =>
   apiFetch('/notifications/unread-count?audience=admin').then((body) => body?.data?.count || 0);
 
-export const markRead = (ids) =>
-  apiFetch('/notifications/read', { method: 'POST', body: JSON.stringify({ ids }) });
+export const markRead = (ids) => apiFetch('/notifications/read', { method: 'POST', body: JSON.stringify({ ids }) });
 
 export const markAllRead = () =>
   apiFetch('/notifications/read-all', { method: 'POST', body: JSON.stringify({ audience: 'admin' }) });

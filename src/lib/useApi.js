@@ -14,15 +14,39 @@ export function useApi(path) {
     if (!path) return undefined;
     let live = true;
     apiFetch(path)
-      .then((body) => live && setResult({ key, data: body && typeof body === 'object' && 'data' in body ? body.data : body, error: '', total: body?.total, page: body?.page, limit: body?.limit }))
+      .then(
+        (body) =>
+          live &&
+          setResult({
+            key,
+            data: body && typeof body === 'object' && 'data' in body ? body.data : body,
+            error: '',
+            total: body?.total,
+            page: body?.page,
+            limit: body?.limit,
+          }),
+      )
       .catch((e) => live && setResult({ key, data: null, error: e.message }));
-    return () => { live = false; };
+    return () => {
+      live = false;
+    };
   }, [path, key]);
 
   const reload = useCallback(() => setNonce((n) => n + 1), []);
   const settled = result.key === key;
-  return { data: settled ? result.data : (result.key && result.key.endsWith(`:${path}`) ? result.data : null), error: settled ? result.error : '', loading: !!path && !settled, total: result.total, page: result.page, limit: result.limit, reload };
+  return {
+    data: settled ? result.data : result.key && result.key.endsWith(`:${path}`) ? result.data : null,
+    error: settled ? result.error : '',
+    loading: !!path && !settled,
+    total: result.total,
+    page: result.page,
+    limit: result.limit,
+    reload,
+  };
 }
 
 /** POST/PATCH helper that unwraps the standard envelope. */
-export const send = (path, method, body) => apiFetch(path, { method, body: body === undefined ? undefined : JSON.stringify(body) }).then((r) => (r && typeof r === 'object' && 'data' in r ? r.data : r));
+export const send = (path, method, body) =>
+  apiFetch(path, { method, body: body === undefined ? undefined : JSON.stringify(body) }).then((r) =>
+    r && typeof r === 'object' && 'data' in r ? r.data : r,
+  );

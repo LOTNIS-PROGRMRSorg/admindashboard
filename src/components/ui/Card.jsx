@@ -7,8 +7,18 @@ export default function Card({ title, icon, action, flush, children, className =
     <section className={`${styles.card} ${flush ? styles.cardFlush : ''} ${className}`}>
       {(title || action) && (
         <div className={`${styles.cardHead} ${flush ? styles.cardHeadFlush : ''}`}>
-          <h2 className={styles.cardTitle}>{icon}{title}</h2>
-          {action && (action.to ? <Link className={styles.cardLink} to={action.to}>{action.label}</Link> : action)}
+          <h2 className={styles.cardTitle}>
+            {icon}
+            {title}
+          </h2>
+          {action &&
+            (action.to ? (
+              <Link className={styles.cardLink} to={action.to}>
+                {action.label}
+              </Link>
+            ) : (
+              action
+            ))}
         </div>
       )}
       {children}
@@ -16,6 +26,8 @@ export default function Card({ title, icon, action, flush, children, className =
   );
 }
 
-export const Grid = ({ cols = 2, children }) => <div className={`${styles.grid} ${cols === 3 ? styles.grid3 : styles.grid2}`}>{children}</div>;
+export const Grid = ({ cols = 2, children }) => (
+  <div className={`${styles.grid} ${cols === 3 ? styles.grid3 : styles.grid2}`}>{children}</div>
+);
 export const Split = ({ children }) => <div className={styles.split}>{children}</div>;
 export const Stack = ({ children }) => <div className={styles.stack}>{children}</div>;

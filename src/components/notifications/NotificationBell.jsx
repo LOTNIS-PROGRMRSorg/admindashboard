@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Bell } from 'lucide-react';
-import {
-  fetchNotifications, fetchUnreadCount, markAllRead, markRead, notificationPath,
-} from '../../lib/notifications';
+import { fetchNotifications, fetchUnreadCount, markAllRead, markRead, notificationPath } from '../../lib/notifications';
 import NotificationItem from './NotificationItem';
 import navbar from '../layout/Navbar.module.css';
 import styles from './NotificationBell.module.css';
@@ -19,7 +17,9 @@ export default function NotificationBell() {
   const navigate = useNavigate();
 
   const refreshCount = useCallback(() => {
-    fetchUnreadCount().then(setCount).catch(() => {});
+    fetchUnreadCount()
+      .then(setCount)
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -31,8 +31,13 @@ export default function NotificationBell() {
   useEffect(() => {
     if (!open) return undefined;
     setLoading(true);
-    fetchNotifications({ limit: 8 }).then(setItems).catch(() => setItems([])).finally(() => setLoading(false));
-    const onClickAway = (event) => { if (!wrapperRef.current?.contains(event.target)) setOpen(false); };
+    fetchNotifications({ limit: 8 })
+      .then(setItems)
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false));
+    const onClickAway = (event) => {
+      if (!wrapperRef.current?.contains(event.target)) setOpen(false);
+    };
     document.addEventListener('mousedown', onClickAway);
     return () => document.removeEventListener('mousedown', onClickAway);
   }, [open]);
@@ -68,14 +73,22 @@ export default function NotificationBell() {
         <div className={styles.panel} role="dialog" aria-label="Notifications">
           <div className={styles.panelHeader}>
             <span>Notifications</span>
-            <button className={styles.linkBtn} onClick={readAll} disabled={!count}>Mark all read</button>
+            <button className={styles.linkBtn} onClick={readAll} disabled={!count}>
+              Mark all read
+            </button>
           </div>
           <div className={styles.list}>
-            {loading && !items.length ? <div className={styles.empty}>Loading…</div>
-              : items.length ? items.map((n) => <NotificationItem key={n.id} notification={n} onClick={openNotification} />)
-              : <div className={styles.empty}>You're all caught up.</div>}
+            {loading && !items.length ? (
+              <div className={styles.empty}>Loading…</div>
+            ) : items.length ? (
+              items.map((n) => <NotificationItem key={n.id} notification={n} onClick={openNotification} />)
+            ) : (
+              <div className={styles.empty}>You're all caught up.</div>
+            )}
           </div>
-          <Link className={styles.footer} to="/notifications" onClick={() => setOpen(false)}>View all notifications</Link>
+          <Link className={styles.footer} to="/notifications" onClick={() => setOpen(false)}>
+            View all notifications
+          </Link>
         </div>
       )}
     </div>

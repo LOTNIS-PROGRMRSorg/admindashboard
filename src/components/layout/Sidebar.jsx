@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Building2, 
-  CalendarCheck, 
-  LineChart, 
-  FileText, 
+import {
+  LayoutDashboard,
+  Users,
+  Building2,
+  CalendarCheck,
+  LineChart,
+  FileText,
   Settings,
   SlidersHorizontal,
   ChevronLeft,
@@ -18,21 +18,50 @@ import {
   Ticket,
   Wallet,
   UtensilsCrossed,
-  Wrench
+  Wrench,
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 // Grouped the way the work is: who, what they sell, money, and trust. Every area that exists is linked here.
 const navGroups = [
   { label: null, items: [{ path: '/', label: 'Dashboard', icon: LayoutDashboard }] },
-  { label: 'People', items: [{ path: '/users', label: 'Users', icon: Users }, { path: '/hosts', label: 'Hosts', icon: BadgeCheck }] },
-  { label: 'Accommodation', items: [
-    { path: '/listings', label: 'Listings', icon: Building2 }, { path: '/bookings', label: 'Bookings', icon: CalendarCheck }, { path: '/move-outs', label: 'Move-outs', icon: LogOut },
-  ] },
+  {
+    label: 'People',
+    items: [
+      { path: '/users', label: 'Users', icon: Users },
+      { path: '/hosts', label: 'Hosts', icon: BadgeCheck },
+    ],
+  },
+  {
+    label: 'Accommodation',
+    items: [
+      { path: '/listings', label: 'Listings', icon: Building2 },
+      { path: '/bookings', label: 'Bookings', icon: CalendarCheck },
+      { path: '/move-outs', label: 'Move-outs', icon: LogOut },
+    ],
+  },
   { label: 'Events', items: [{ path: '/events', label: 'Events', icon: Ticket }] },
-  { label: 'Money', items: [{ path: '/refunds', label: 'Refunds', icon: Undo2 }, { path: '/payouts', label: 'Payouts', icon: Wallet }] },
-  { label: 'Trust & insight', items: [{ path: '/reports', label: 'Reports', icon: FileText }, { path: '/analytics', label: 'Analytics', icon: LineChart }] },
-  { label: 'Admin', items: [{ path: '/configuration', label: 'Configuration', icon: SlidersHorizontal }, { path: '/settings', label: 'Settings', icon: Settings }] },
+  {
+    label: 'Money',
+    items: [
+      { path: '/refunds', label: 'Refunds', icon: Undo2 },
+      { path: '/payouts', label: 'Payouts', icon: Wallet },
+    ],
+  },
+  {
+    label: 'Trust & insight',
+    items: [
+      { path: '/reports', label: 'Reports', icon: FileText },
+      { path: '/analytics', label: 'Analytics', icon: LineChart },
+    ],
+  },
+  {
+    label: 'Admin',
+    items: [
+      { path: '/configuration', label: 'Configuration', icon: SlidersHorizontal },
+      { path: '/settings', label: 'Settings', icon: Settings },
+    ],
+  },
 ];
 
 // Business lines still to be built. They get real routes (a placeholder page
@@ -59,10 +88,10 @@ export default function Sidebar() {
             <Plane size={24} />
           </div>
         )}
-        <button 
+        <button
           className={styles.toggleBtn}
           onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
@@ -91,9 +120,7 @@ export default function Sidebar() {
           <NavLink
             key={item.path}
             to={item.path}
-            className={({ isActive }) =>
-              `${styles.navLink} ${styles.upcoming} ${isActive ? styles.active : ''}`
-            }
+            className={({ isActive }) => `${styles.navLink} ${styles.upcoming} ${isActive ? styles.active : ''}`}
           >
             <item.icon size={20} className={styles.icon} />
             <span className={styles.label}>{item.label}</span>

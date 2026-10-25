@@ -5,11 +5,11 @@ export default function FormInput({ label, type = 'text', value, onChange, place
   return (
     <div className={styles.container}>
       {label && <label className={styles.label}>{label}</label>}
-      <input 
-        type={type} 
-        className={`${styles.input} ${disabled ? styles.disabled : ''}`} 
-        value={value} 
-        onChange={(e) => onChange && onChange(e.target.value)} 
+      <input
+        type={type}
+        className={`${styles.input} ${disabled ? styles.disabled : ''}`}
+        value={value}
+        onChange={(e) => onChange && onChange(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
       />

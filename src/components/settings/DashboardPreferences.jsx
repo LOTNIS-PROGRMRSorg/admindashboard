@@ -13,7 +13,7 @@ export default function DashboardPreferences({ defaultPrefs, onSave }) {
   }, []);
 
   const handleChange = (key, value) => {
-    setPrefs(prev => ({ ...prev, [key]: value }));
+    setPrefs((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSave = () => {
@@ -30,29 +30,29 @@ export default function DashboardPreferences({ defaultPrefs, onSave }) {
 
       <div className={styles.content}>
         <h3 className={styles.groupTitle}>Layout Options</h3>
-        <ToggleSwitch 
-          label="Compact Table Mode" 
+        <ToggleSwitch
+          label="Compact Table Mode"
           description="Reduce spacing in tables to show more data at once."
           checked={prefs.compactTableMode}
           onChange={(val) => handleChange('compactTableMode', val)}
         />
         <div style={{ height: '1px', backgroundColor: 'var(--color-border)', margin: 'var(--spacing-2) 0' }}></div>
-        <ToggleSwitch 
-          label="Show Analytics Cards" 
+        <ToggleSwitch
+          label="Show Analytics Cards"
           description="Display high-level statistics at the top of the dashboard."
           checked={prefs.showAnalyticsCards}
           onChange={(val) => handleChange('showAnalyticsCards', val)}
         />
         <div style={{ height: '1px', backgroundColor: 'var(--color-border)', margin: 'var(--spacing-2) 0' }}></div>
-        <ToggleSwitch 
-          label="Show Recent Activity" 
+        <ToggleSwitch
+          label="Show Recent Activity"
           description="Display the recent activity feed on the main page."
           checked={prefs.showRecentActivity}
           onChange={(val) => handleChange('showRecentActivity', val)}
         />
         <div style={{ height: '1px', backgroundColor: 'var(--color-border)', margin: 'var(--spacing-2) 0' }}></div>
-        <ToggleSwitch 
-          label="Show Booking Stats" 
+        <ToggleSwitch
+          label="Show Booking Stats"
           description="Show detailed booking metrics and charts."
           checked={prefs.showBookingStats}
           onChange={(val) => handleChange('showBookingStats', val)}
@@ -60,7 +60,9 @@ export default function DashboardPreferences({ defaultPrefs, onSave }) {
       </div>
 
       <div className={styles.footer}>
-        <button className={styles.btnPrimary} onClick={handleSave}>Save Preferences</button>
+        <button className={styles.btnPrimary} onClick={handleSave}>
+          Save Preferences
+        </button>
       </div>
     </div>
   );

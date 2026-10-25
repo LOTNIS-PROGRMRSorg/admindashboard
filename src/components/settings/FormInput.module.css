@@ -18,7 +18,9 @@
   font-size: 0.875rem;
   color: var(--color-text-base);
   background-color: var(--color-bg-surface);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   font-family: inherit;
 }
 

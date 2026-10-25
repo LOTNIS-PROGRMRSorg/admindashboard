@@ -33,7 +33,12 @@ ul {
 }
 
 /* Typography basics */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   color: var(--color-text-base);
   margin-bottom: var(--spacing-4);
@@ -44,5 +49,11 @@ p {
   margin-bottom: var(--spacing-4);
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
-.spin { animation: spin 0.9s linear infinite; }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: spin 0.9s linear infinite;
+}

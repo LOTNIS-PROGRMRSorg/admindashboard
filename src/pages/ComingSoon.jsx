@@ -9,12 +9,27 @@ export default function ComingSoon({ title, description }) {
   return (
     <Page>
       <PageHeader eyebrow="Coming soon" title={title} subtitle={description} />
-      <div style={{
-        background: 'var(--color-bg-surface)', border: '1px dashed var(--color-border)',
-        borderRadius: 'var(--radius-lg)', padding: 'var(--spacing-8)', maxWidth: 640,
-      }}>
+      <div
+        style={{
+          background: 'var(--color-bg-surface)',
+          border: '1px dashed var(--color-border)',
+          borderRadius: 'var(--radius-lg)',
+          padding: 'var(--spacing-8)',
+          maxWidth: 640,
+        }}
+      >
         <strong style={{ color: 'var(--color-text-base)' }}>Not launched yet — here is what will plug in:</strong>
-        <ul style={{ listStyle: 'none', margin: 'var(--spacing-4) 0 0', padding: 0, display: 'grid', gap: 'var(--spacing-3)', color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
+        <ul
+          style={{
+            listStyle: 'none',
+            margin: 'var(--spacing-4) 0 0',
+            padding: 0,
+            display: 'grid',
+            gap: 'var(--spacing-3)',
+            color: 'var(--color-text-muted)',
+            fontSize: '0.875rem',
+          }}
+        >
           {[
             'Listings and applications reviewed by the same host verification flow',
             'Orders / bookings in the shared Bookings list, filtered by service',

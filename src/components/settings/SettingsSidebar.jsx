@@ -7,7 +7,7 @@ const TABS = [
   { id: 'appearance', label: 'Appearance', icon: '🎨' },
   { id: 'dashboard', label: 'Dashboard Preferences', icon: '📊' },
   { id: 'notifications', label: 'Notifications', icon: '🔔' },
-  { id: 'security', label: 'Security', icon: '🔒' }
+  { id: 'security', label: 'Security', icon: '🔒' },
 ];
 
 export default function SettingsSidebar({ activeTab, onTabChange }) {

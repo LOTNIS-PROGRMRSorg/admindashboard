@@ -11,8 +11,15 @@ const decl = (obj) => Object.entries(obj).map(([name, value]) => `  --color-${na
 
 const css = [
   '/* GENERATED from palette.json by scripts/generate-tokens.mjs — edit the palette, not this file. */',
-  ':root {', ...decl(palette.light), ...decl(palette.constants), '}', '',
-  '[data-theme="dark"] {', ...decl(palette.dark), '}', '',
+  ':root {',
+  ...decl(palette.light),
+  ...decl(palette.constants),
+  '}',
+  '',
+  '[data-theme="dark"] {',
+  ...decl(palette.dark),
+  '}',
+  '',
 ].join('\n');
 
 const camel = (s) => s.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
@@ -30,9 +37,18 @@ const js = [
   '',
 ].join('\n');
 
-const files = [[join(root, 'src/theme/tokens.css'), css], [join(root, 'src/theme/colors.js'), js]];
+const files = [
+  [join(root, 'src/theme/tokens.css'), css],
+  [join(root, 'src/theme/colors.js'), js],
+];
 if (process.argv.includes('--check')) {
   const stale = files.filter(([p, c]) => !existsSync(p) || readFileSync(p, 'utf8') !== c);
-  if (stale.length) { console.error('Theme files are out of date — run `npm run tokens`.'); process.exit(1); }
+  if (stale.length) {
+    console.error('Theme files are out of date — run `npm run tokens`.');
+    process.exit(1);
+  }
   console.log('theme files are up to date');
-} else { for (const [p, c] of files) writeFileSync(p, c); console.log('wrote src/theme/tokens.css and colors.js'); }
+} else {
+  for (const [p, c] of files) writeFileSync(p, c);
+  console.log('wrote src/theme/tokens.css and colors.js');
+}

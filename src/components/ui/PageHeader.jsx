@@ -6,7 +6,11 @@ import styles from './ui.module.css';
 export default function PageHeader({ eyebrow, title, subtitle, back, children }) {
   return (
     <>
-      {back && <Link to={back.to} className={styles.back}><ArrowLeft size={14} /> {back.label}</Link>}
+      {back && (
+        <Link to={back.to} className={styles.back}>
+          <ArrowLeft size={14} /> {back.label}
+        </Link>
+      )}
       <div className={styles.pageHeader}>
         <div>
           {eyebrow && <span className={styles.eyebrow}>{eyebrow}</span>}

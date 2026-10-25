@@ -7,7 +7,7 @@ export default function ProfileSettings({ profile, onSave }) {
     name: profile.name,
     username: profile.username,
     email: profile.email,
-    phone: profile.phone
+    phone: profile.phone,
   });
 
   // Re-sync the form whenever the real profile arrives (it loads
@@ -22,7 +22,7 @@ export default function ProfileSettings({ profile, onSave }) {
   }, [profile.name, profile.username, profile.email, profile.phone]);
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = () => {
@@ -40,41 +40,39 @@ export default function ProfileSettings({ profile, onSave }) {
         <div className={styles.avatarSection}>
           <img src={profile.avatar} alt="Profile" className={styles.avatar} />
           <div>
-            <button className={styles.btnSecondary} style={{ marginBottom: '0.5rem' }}>Change Avatar</button>
-            <p className={styles.subtitle} style={{ fontSize: '0.75rem' }}>JPG, GIF or PNG. Max size of 800K</p>
+            <button className={styles.btnSecondary} style={{ marginBottom: '0.5rem' }}>
+              Change Avatar
+            </button>
+            <p className={styles.subtitle} style={{ fontSize: '0.75rem' }}>
+              JPG, GIF or PNG. Max size of 800K
+            </p>
           </div>
         </div>
 
         <h3 className={styles.groupTitle}>Personal Information</h3>
         <div className={styles.formGrid}>
-          <FormInput 
-            label="Full Name" 
-            value={formData.name} 
-            onChange={(val) => handleChange('name', val)} 
-          />
-          <FormInput 
-            label="Username" 
-            value={formData.username} 
-            onChange={(val) => handleChange('username', val)} 
-          />
-          <FormInput 
-            label="Email Address" 
+          <FormInput label="Full Name" value={formData.name} onChange={(val) => handleChange('name', val)} />
+          <FormInput label="Username" value={formData.username} onChange={(val) => handleChange('username', val)} />
+          <FormInput
+            label="Email Address"
             type="email"
-            value={formData.email} 
-            onChange={(val) => handleChange('email', val)} 
+            value={formData.email}
+            onChange={(val) => handleChange('email', val)}
           />
-          <FormInput 
-            label="Phone Number" 
+          <FormInput
+            label="Phone Number"
             type="tel"
-            value={formData.phone} 
-            onChange={(val) => handleChange('phone', val)} 
+            value={formData.phone}
+            onChange={(val) => handleChange('phone', val)}
           />
         </div>
       </div>
 
       <div className={styles.footer}>
         <button className={styles.btnSecondary}>Cancel</button>
-        <button className={styles.btnPrimary} onClick={handleSave}>Save Changes</button>
+        <button className={styles.btnPrimary} onClick={handleSave}>
+          Save Changes
+        </button>
       </div>
     </div>
   );

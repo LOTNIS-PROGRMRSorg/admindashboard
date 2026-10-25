@@ -92,8 +92,14 @@ function App() {
           <Route path="notifications" element={<Notifications />} />
           <Route path="configuration" element={<Configuration />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="food" element={<ComingSoon title="Food" description="Restaurants, vendors and food orders." />} />
-          <Route path="services" element={<ComingSoon title="Services" description="Trusted service providers booked through Lotnis." />} />
+          <Route
+            path="food"
+            element={<ComingSoon title="Food" description="Restaurants, vendors and food orders." />}
+          />
+          <Route
+            path="services"
+            element={<ComingSoon title="Services" description="Trusted service providers booked through Lotnis." />}
+          />
         </Route>
       </Routes>
     </Router>

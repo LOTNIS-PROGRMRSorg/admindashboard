@@ -34,9 +34,7 @@ function mapBackendProfile(data) {
     username: data.email ? data.email.split('@')[0] : '',
     email: data.email || '',
     phone: data.phone || '',
-    role: data.dashboard_role
-      ? data.dashboard_role.charAt(0).toUpperCase() + data.dashboard_role.slice(1)
-      : 'Manager',
+    role: data.dashboard_role ? data.dashboard_role.charAt(0).toUpperCase() + data.dashboard_role.slice(1) : 'Manager',
     avatar: data.avatar_url || `https://i.pravatar.cc/150?u=${data.email || data.id}`,
     createdAt: data.created_at,
     lastLogin: data.member_since || data.created_at,
@@ -127,20 +125,21 @@ export default function Settings() {
       <div className={pageStyles.header}>
         <div>
           <h1 className={pageStyles.title}>Settings & Preferences</h1>
-          <p className={pageStyles.subtitle} style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+          <p
+            className={pageStyles.subtitle}
+            style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}
+          >
             Manage your account, dashboard preferences, and platform configuration.
           </p>
         </div>
       </div>
-      
+
       <div className={styles.layout}>
         <aside className={styles.sidebarColumn}>
           <SettingsSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         </aside>
-        
-        <main className={styles.contentColumn}>
-          {renderActiveSection()}
-        </main>
+
+        <main className={styles.contentColumn}>{renderActiveSection()}</main>
       </div>
 
       {toastMessage && (

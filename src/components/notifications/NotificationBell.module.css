@@ -1,4 +1,6 @@
-.wrapper { position: relative; }
+.wrapper {
+  position: relative;
+}
 
 .badge {
   position: absolute;
@@ -46,9 +48,15 @@
   color: var(--color-primary);
   font-weight: 600;
 }
-.linkBtn:disabled { color: var(--color-text-muted); cursor: default; }
+.linkBtn:disabled {
+  color: var(--color-text-muted);
+  cursor: default;
+}
 
-.list { max-height: 380px; overflow-y: auto; }
+.list {
+  max-height: 380px;
+  overflow-y: auto;
+}
 
 .empty {
   padding: var(--spacing-8) var(--spacing-4);
@@ -66,4 +74,6 @@
   font-size: 0.8125rem;
   font-weight: 600;
 }
-.footer:hover { background: var(--color-bg-subtle); }
+.footer:hover {
+  background: var(--color-bg-subtle);
+}

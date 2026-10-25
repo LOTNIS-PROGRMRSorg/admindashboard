@@ -16,4 +16,7 @@ export function formatNumber(n) {
 }
 
 export const personName = (p) => [p?.first_name, p?.last_name].filter(Boolean).join(' ') || p?.name || p?.email || '—';
-export const titleCase = (s) => String(s ?? '').replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+export const titleCase = (s) =>
+  String(s ?? '')
+    .replace(/_/g, ' ')
+    .replace(/^./, (c) => c.toUpperCase());

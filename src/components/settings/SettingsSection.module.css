@@ -137,8 +137,13 @@
   box-shadow: var(--shadow-sm);
 }
 
-.previewLight { background-color: var(--color-bg-base); }
-.previewDark { background-color: var(--color-preview-dark-bg); border-color: var(--color-preview-dark-border); }
+.previewLight {
+  background-color: var(--color-bg-base);
+}
+.previewDark {
+  background-color: var(--color-preview-dark-bg);
+  border-color: var(--color-preview-dark-border);
+}
 
 .previewSystem {
   background-color: var(--color-bg-subtle);

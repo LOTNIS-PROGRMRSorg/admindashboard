@@ -13,11 +13,27 @@ export default function DataTable({ columns, rows, rowTo, empty = 'Nothing here 
     <>
       <div className={styles.tableWrap}>
         <table className={styles.table}>
-          <thead><tr>{columns.map((c) => <th key={c.key} className={c.align === 'right' ? styles.right : ''}>{c.label}</th>)}</tr></thead>
+          <thead>
+            <tr>
+              {columns.map((c) => (
+                <th key={c.key} className={c.align === 'right' ? styles.right : ''}>
+                  {c.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={row.id ?? i} className={rowTo ? styles.rowLink : ''} onClick={rowTo ? () => navigate(rowTo(row)) : undefined}>
-                {columns.map((c) => <td key={c.key} className={c.align === 'right' ? styles.right : ''}>{c.render ? c.render(row) : row[c.key]}</td>)}
+              <tr
+                key={row.id ?? i}
+                className={rowTo ? styles.rowLink : ''}
+                onClick={rowTo ? () => navigate(rowTo(row)) : undefined}
+              >
+                {columns.map((c) => (
+                  <td key={c.key} className={c.align === 'right' ? styles.right : ''}>
+                    {c.render ? c.render(row) : row[c.key]}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
@@ -26,10 +42,16 @@ export default function DataTable({ columns, rows, rowTo, empty = 'Nothing here 
       </div>
       {onPage && pages > 1 && (
         <div className={styles.pager}>
-          <span>Page {page} of {pages} · {total} total</span>
+          <span>
+            Page {page} of {pages} · {total} total
+          </span>
           <span className={styles.toolbar}>
-            <button className={styles.btn} disabled={page <= 1} onClick={() => onPage(page - 1)}>← Prev</button>
-            <button className={styles.btn} disabled={page >= pages} onClick={() => onPage(page + 1)}>Next →</button>
+            <button className={styles.btn} disabled={page <= 1} onClick={() => onPage(page - 1)}>
+              ← Prev
+            </button>
+            <button className={styles.btn} disabled={page >= pages} onClick={() => onPage(page + 1)}>
+              Next →
+            </button>
           </span>
         </div>
       )}

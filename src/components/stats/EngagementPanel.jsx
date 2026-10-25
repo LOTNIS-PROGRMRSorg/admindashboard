@@ -17,8 +17,20 @@ export default function EngagementPanel({ engagement, steps }) {
         <StatTile label="Clicked book / tickets" value={t.clicks.toLocaleString()} />
       </StatGrid>
       <Grid>
-        <Card title="Visits per day"><EngagementChart days={engagement.days} /></Card>
-        {steps && <Card title="From looking to buying"><Funnel steps={[{ label: 'Viewed the page', value: t.views }, { label: 'Clicked to book or buy', value: t.clicks }, ...steps]} /></Card>}
+        <Card title="Visits per day">
+          <EngagementChart days={engagement.days} />
+        </Card>
+        {steps && (
+          <Card title="From looking to buying">
+            <Funnel
+              steps={[
+                { label: 'Viewed the page', value: t.views },
+                { label: 'Clicked to book or buy', value: t.clicks },
+                ...steps,
+              ]}
+            />
+          </Card>
+        )}
       </Grid>
     </>
   );

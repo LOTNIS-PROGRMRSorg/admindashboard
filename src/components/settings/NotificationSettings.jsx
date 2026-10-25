@@ -13,16 +13,16 @@ export default function NotificationSettings({ defaultPrefs, onSave }) {
   }, []);
 
   const handleEmailChange = (key, value) => {
-    setPrefs(prev => ({
+    setPrefs((prev) => ({
       ...prev,
-      email: { ...prev.email, [key]: value }
+      email: { ...prev.email, [key]: value },
     }));
   };
 
   const handleDashboardChange = (key, value) => {
-    setPrefs(prev => ({
+    setPrefs((prev) => ({
       ...prev,
-      dashboard: { ...prev.dashboard, [key]: value }
+      dashboard: { ...prev.dashboard, [key]: value },
     }));
   };
 
@@ -40,49 +40,53 @@ export default function NotificationSettings({ defaultPrefs, onSave }) {
 
       <div className={styles.content}>
         <h3 className={styles.groupTitle}>Email Notifications</h3>
-        <ToggleSwitch 
-          label="New Booking Alerts" 
+        <ToggleSwitch
+          label="New Booking Alerts"
           checked={prefs.email.newBookings}
           onChange={(val) => handleEmailChange('newBookings', val)}
         />
-        <ToggleSwitch 
-          label="New User Registrations" 
+        <ToggleSwitch
+          label="New User Registrations"
           checked={prefs.email.newRegistrations}
           onChange={(val) => handleEmailChange('newRegistrations', val)}
         />
-        <ToggleSwitch 
-          label="New Listing Submissions" 
+        <ToggleSwitch
+          label="New Listing Submissions"
           checked={prefs.email.newListings}
           onChange={(val) => handleEmailChange('newListings', val)}
         />
-        <ToggleSwitch 
-          label="Reports & Complaints" 
+        <ToggleSwitch
+          label="Reports & Complaints"
           description="Get notified immediately when a critical report is filed."
           checked={prefs.email.reportsAndComplaints}
           onChange={(val) => handleEmailChange('reportsAndComplaints', val)}
         />
 
-        <h3 className={styles.groupTitle} style={{ marginTop: 'var(--spacing-6)' }}>Dashboard Alerts</h3>
-        <ToggleSwitch 
-          label="System Alerts" 
+        <h3 className={styles.groupTitle} style={{ marginTop: 'var(--spacing-6)' }}>
+          Dashboard Alerts
+        </h3>
+        <ToggleSwitch
+          label="System Alerts"
           description="Platform updates, maintenance, and system health."
           checked={prefs.dashboard.systemAlerts}
           onChange={(val) => handleDashboardChange('systemAlerts', val)}
         />
-        <ToggleSwitch 
-          label="Moderation Alerts" 
+        <ToggleSwitch
+          label="Moderation Alerts"
           checked={prefs.dashboard.moderationAlerts}
           onChange={(val) => handleDashboardChange('moderationAlerts', val)}
         />
-        <ToggleSwitch 
-          label="Booking Alerts" 
+        <ToggleSwitch
+          label="Booking Alerts"
           checked={prefs.dashboard.bookingAlerts}
           onChange={(val) => handleDashboardChange('bookingAlerts', val)}
         />
       </div>
 
       <div className={styles.footer}>
-        <button className={styles.btnPrimary} onClick={handleSave}>Save Preferences</button>
+        <button className={styles.btnPrimary} onClick={handleSave}>
+          Save Preferences
+        </button>
       </div>
     </div>
   );

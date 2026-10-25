@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NotificationItem from '../components/notifications/NotificationItem';
-import {
-  fetchNotifications, markAllRead, markRead, notificationPath,
-} from '../lib/notifications';
+import { fetchNotifications, markAllRead, markRead, notificationPath } from '../lib/notifications';
 import { Page, PageHeader, Notice } from '../components/ui';
 import styles from './Notifications.module.css';
 
@@ -41,17 +39,25 @@ export default function Notifications() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
-  const visible = useMemo(() => items.filter((n) => {
-    if (unreadOnly && n.read_at) return false;
-    return area === 'all' || String(n.type).startsWith(`${area}.`);
-  }), [items, area, unreadOnly]);
+  const visible = useMemo(
+    () =>
+      items.filter((n) => {
+        if (unreadOnly && n.read_at) return false;
+        return area === 'all' || String(n.type).startsWith(`${area}.`);
+      }),
+    [items, area, unreadOnly],
+  );
 
   const open = async (notification) => {
     if (!notification.read_at) {
       await markRead([notification.id]).catch(() => {});
-      setItems((current) => current.map((n) => (n.id === notification.id ? { ...n, read_at: new Date().toISOString() } : n)));
+      setItems((current) =>
+        current.map((n) => (n.id === notification.id ? { ...n, read_at: new Date().toISOString() } : n)),
+      );
     }
     navigate(notificationPath(notification));
   };
@@ -63,7 +69,11 @@ export default function Notifications() {
 
   return (
     <Page>
-      <PageHeader eyebrow="Inbox" title="Notifications" subtitle="Host verification requests, bookings, refunds, reports and payouts that need your attention." />
+      <PageHeader
+        eyebrow="Inbox"
+        title="Notifications"
+        subtitle="Host verification requests, bookings, refunds, reports and payouts that need your attention."
+      />
       {error && <Notice tone="danger">{error}</Notice>}
 
       <div className={styles.tabs}>
@@ -74,20 +84,27 @@ export default function Notifications() {
             onClick={() => setArea(tab.key)}
             title={tab.soon ? 'Coming soon' : undefined}
           >
-            {tab.label}{tab.soon ? ' · soon' : ''}
+            {tab.label}
+            {tab.soon ? ' · soon' : ''}
           </button>
         ))}
         <span className={styles.spacer} />
         <label style={{ fontSize: '0.8125rem', display: 'flex', gap: 6, alignItems: 'center' }}>
           <input type="checkbox" checked={unreadOnly} onChange={(e) => setUnreadOnly(e.target.checked)} /> Unread only
         </label>
-        <button className={styles.tab} onClick={readAll}>Mark all read</button>
+        <button className={styles.tab} onClick={readAll}>
+          Mark all read
+        </button>
       </div>
 
       <div className={styles.card}>
-        {loading && !items.length ? <div className={styles.empty}>Loading…</div>
-          : visible.length ? visible.map((n) => <NotificationItem key={n.id} notification={n} onClick={open} />)
-          : <div className={styles.empty}>Nothing here yet.</div>}
+        {loading && !items.length ? (
+          <div className={styles.empty}>Loading…</div>
+        ) : visible.length ? (
+          visible.map((n) => <NotificationItem key={n.id} notification={n} onClick={open} />)
+        ) : (
+          <div className={styles.empty}>Nothing here yet.</div>
+        )}
         {!done && items.length > 0 && (
           <button className={styles.more} disabled={loading} onClick={() => load(items[items.length - 1].created_at)}>
             {loading ? 'Loading…' : 'Load older'}

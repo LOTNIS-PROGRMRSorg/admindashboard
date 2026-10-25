@@ -13,7 +13,7 @@ export default function AppearanceSettings({ onSave }) {
   const applyTheme = (newTheme) => {
     setTheme(newTheme);
     localStorage.setItem('lotnis_theme_preference', newTheme);
-    
+
     if (newTheme === 'system') {
       const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
@@ -36,7 +36,7 @@ export default function AppearanceSettings({ onSave }) {
       <div className={styles.content}>
         <h3 className={styles.groupTitle}>Theme Preference</h3>
         <div className={styles.themeGrid}>
-          <button 
+          <button
             className={`${styles.themeCard} ${theme === 'light' ? styles.active : ''}`}
             onClick={() => applyTheme('light')}
           >
@@ -50,7 +50,7 @@ export default function AppearanceSettings({ onSave }) {
             <span className={styles.themeLabel}>Light Mode</span>
           </button>
 
-          <button 
+          <button
             className={`${styles.themeCard} ${theme === 'dark' ? styles.active : ''}`}
             onClick={() => applyTheme('dark')}
           >
@@ -64,12 +64,12 @@ export default function AppearanceSettings({ onSave }) {
             <span className={styles.themeLabel}>Dark Mode</span>
           </button>
 
-          <button 
+          <button
             className={`${styles.themeCard} ${theme === 'system' ? styles.active : ''}`}
             onClick={() => applyTheme('system')}
           >
             <div className={`${styles.themePreview} ${styles.previewSystem}`}>
-               <span style={{fontSize: '2rem'}}>💻</span>
+              <span style={{ fontSize: '2rem' }}>💻</span>
             </div>
             <span className={styles.themeLabel}>System Preference</span>
           </button>
@@ -77,7 +77,9 @@ export default function AppearanceSettings({ onSave }) {
       </div>
 
       <div className={styles.footer}>
-        <button className={styles.btnPrimary} onClick={handleSave}>Save Changes</button>
+        <button className={styles.btnPrimary} onClick={handleSave}>
+          Save Changes
+        </button>
       </div>
     </div>
   );
