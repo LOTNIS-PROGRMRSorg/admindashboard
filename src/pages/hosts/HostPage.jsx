@@ -151,7 +151,7 @@ export default function HostPage() {
                 rows={[
                   ['Name', profile.name],
                   ['Email', profile.email],
-                  ['Phone', host.phone || profile.phone],
+                  ['Phone', profile.phone],
                   ['Where', [host.city, host.state, host.country].filter(Boolean).join(', ')],
                   ['Business', host.business_name],
                   ['Applied', formatDate(host.created_at)],
