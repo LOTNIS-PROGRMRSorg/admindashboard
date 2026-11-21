@@ -94,7 +94,7 @@ export default function Refunds() {
           <StatTile
             label="Still owed"
             value={money(s.currency, s.outstanding_amount)}
-            sub={`Stays ${money(s.currency, s.services.accommodation.outstanding)} · Events ${money(s.currency, s.services.event.outstanding)}`}
+            sub={`Stays ${money(s.currency, s.services.accommodation.outstanding)} · Events ${money(s.currency, s.services.event.outstanding)} · Services ${money(s.currency, s.services.service?.outstanding ?? 0)}`}
           />
         </StatGrid>
       )}
@@ -114,7 +114,7 @@ export default function Refunds() {
         {list.loading ? (
           <LoadingState />
         ) : list.error ? (
-          <ErrorState>{list.error}</ErrorState>
+          <ErrorState onRetry={list.reload}>{list.error}</ErrorState>
         ) : (
           <DataTable
             rows={list.data?.data ?? list.data ?? []}
@@ -128,7 +128,12 @@ export default function Refunds() {
               {
                 key: 'title',
                 label: 'For',
-                render: (r) => <CellMain title={r.title} sub={r.service === 'event' ? 'Event tickets' : 'Stay'} />,
+                render: (r) => (
+                  <CellMain
+                    title={r.title}
+                    sub={r.service === 'event' ? 'Event tickets' : r.service === 'service' ? 'Service job' : 'Stay'}
+                  />
+                ),
               },
               {
                 key: 'customer',

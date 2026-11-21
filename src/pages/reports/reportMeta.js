@@ -7,6 +7,8 @@ export const TARGETS = [
   { key: 'booking', label: 'Stays booked' },
   { key: 'ticket_order', label: 'Tickets bought' },
   { key: 'host', label: 'Hosts' },
+  { key: 'service', label: 'Services' },
+  { key: 'service_request', label: 'Service jobs' },
 ];
 export const TARGET_LABEL = {
   property: 'Listing',
@@ -22,6 +24,7 @@ export const categoryLabel = titleCase;
 export const subjectOf = (r) => {
   if (r.property) return { label: r.property.name, to: `/listings/${r.property.id}` };
   if (r.event) return { label: r.event.title, to: `/events/${r.event.id}` };
+  if (r.service) return { label: r.service.title, to: `/services/${r.service.id}` };
   if (r.host_id) return { label: r.host_name || 'Host', to: `/hosts/${r.host_id}` };
   return { label: '—', to: null };
 };

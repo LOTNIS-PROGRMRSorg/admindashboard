@@ -49,6 +49,36 @@ p {
   margin-bottom: var(--spacing-4);
 }
 
+/* One visible focus style for keyboard users everywhere (brand green, passes 3:1 on white and dark). */
+:focus-visible {
+  outline: 2px solid var(--color-success);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) {
+  outline: none;
+}
+::selection {
+  background: var(--color-primary-soft);
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+  letter-spacing: -0.015em;
+}
+td,
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -56,4 +86,17 @@ p {
 }
 .spin {
   animation: spin 0.9s linear infinite;
+}
+
+/* Charts (recharts): legend and axis text match the rest of the UI instead of the browser's 16px default. */
+.recharts-legend-item-text {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted) !important;
+}
+.recharts-legend-wrapper {
+  padding-top: var(--spacing-2);
+}
+.recharts-cartesian-axis-tick-value {
+  font-size: 0.75rem;
+  fill: var(--color-text-muted);
 }

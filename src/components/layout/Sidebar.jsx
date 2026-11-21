@@ -1,132 +1,128 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Users,
-  Building2,
-  CalendarCheck,
-  LineChart,
-  FileText,
-  Settings,
-  SlidersHorizontal,
-  ChevronLeft,
-  ChevronRight,
-  Plane,
-  BadgeCheck,
-  Undo2,
-  LogOut,
-  Ticket,
-  Wallet,
-  UtensilsCrossed,
-  Wrench,
-} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
+import { navGroups, upcomingItems } from './navItems';
 import styles from './Sidebar.module.css';
 
-// Grouped the way the work is: who, what they sell, money, and trust. Every area that exists is linked here.
-const navGroups = [
-  { label: null, items: [{ path: '/', label: 'Dashboard', icon: LayoutDashboard }] },
-  {
-    label: 'People',
-    items: [
-      { path: '/users', label: 'Users', icon: Users },
-      { path: '/hosts', label: 'Hosts', icon: BadgeCheck },
-    ],
-  },
-  {
-    label: 'Accommodation',
-    items: [
-      { path: '/listings', label: 'Listings', icon: Building2 },
-      { path: '/bookings', label: 'Bookings', icon: CalendarCheck },
-      { path: '/move-outs', label: 'Move-outs', icon: LogOut },
-    ],
-  },
-  { label: 'Events', items: [{ path: '/events', label: 'Events', icon: Ticket }] },
-  {
-    label: 'Money',
-    items: [
-      { path: '/refunds', label: 'Refunds', icon: Undo2 },
-      { path: '/payouts', label: 'Payouts', icon: Wallet },
-    ],
-  },
-  {
-    label: 'Trust & insight',
-    items: [
-      { path: '/reports', label: 'Reports', icon: FileText },
-      { path: '/analytics', label: 'Analytics', icon: LineChart },
-    ],
-  },
-  {
-    label: 'Admin',
-    items: [
-      { path: '/configuration', label: 'Configuration', icon: SlidersHorizontal },
-      { path: '/settings', label: 'Settings', icon: Settings },
-    ],
-  },
-];
+const COLLAPSE_KEY = 'lotnis_admin_sidebar_collapsed';
+const readCollapsed = () => {
+  try {
+    return localStorage.getItem(COLLAPSE_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
 
-// Business lines still to be built. They get real routes (a placeholder page
-// today) so each one can be switched on without touching navigation again.
-const upcomingItems = [
-  { path: '/food', label: 'Food', icon: UtensilsCrossed },
-  { path: '/services', label: 'Services', icon: Wrench },
-];
+export function BrandMark({ compact }) {
+  return (
+    <span className={styles.brand}>
+      <span className={styles.brandMark} aria-hidden="true">
+        L
+      </span>
+      {!compact && (
+        <span className={styles.brandText}>
+          lotnis <em>Admin</em>
+        </span>
+      )}
+    </span>
+  );
+}
 
-export default function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+/**
+ * Desktop: a sticky rail that can collapse to icons (remembered per browser).
+ * Phones/tablets: an off-canvas drawer opened from the navbar; closes on navigation, Esc or backdrop tap.
+ */
+export default function Sidebar({ mobileOpen, onClose }) {
+  const [collapsed, setCollapsed] = useState(readCollapsed);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(COLLAPSE_KEY, collapsed ? '1' : '0');
+    } catch {
+      /* private mode: just don't remember */
+    }
+  }, [collapsed]);
+
+  // Close the drawer whenever the route changes.
+  useEffect(() => {
+    onClose?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e) => e.key === 'Escape' && onClose?.();
+    window.addEventListener('keydown', onKey);
+    const { overflow } = document.body.style;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = overflow;
+    };
+  }, [mobileOpen, onClose]);
+
+  const link = (item, extra = '') => (
+    <NavLink
+      key={item.path}
+      to={item.path}
+      end={item.path === '/'}
+      title={collapsed ? item.label : undefined}
+      className={({ isActive }) => `${styles.navLink} ${extra} ${isActive ? styles.active : ''}`}
+    >
+      <item.icon size={18} strokeWidth={1.9} className={styles.icon} aria-hidden="true" />
+      <span className={styles.label}>{item.label}</span>
+    </NavLink>
+  );
 
   return (
-    <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
-      <div className={styles.logoContainer}>
-        {!collapsed && (
-          <div className={styles.logo}>
-            <Plane size={24} />
-            <span>Lotnis</span>
-          </div>
-        )}
-        {collapsed && (
-          <div className={styles.logo} style={{ justifyContent: 'center', width: '100%' }}>
-            <Plane size={24} />
-          </div>
-        )}
-        <button
-          className={styles.toggleBtn}
-          onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-        </button>
-      </div>
-
-      <nav className={styles.nav}>
-        {navGroups.map((group) => (
-          <div key={group.label ?? 'top'} className={styles.group}>
-            {group.label && !collapsed && <span className={styles.groupLabel}>{group.label}</span>}
-            {group.items.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                end={item.path === '/'}
-                className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}
-              >
-                <item.icon size={20} className={styles.icon} />
-                <span className={styles.label}>{item.label}</span>
-              </NavLink>
-            ))}
-          </div>
-        ))}
-
-        {!collapsed && <span className={styles.groupLabel}>Coming soon</span>}
-        {upcomingItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => `${styles.navLink} ${styles.upcoming} ${isActive ? styles.active : ''}`}
-          >
-            <item.icon size={20} className={styles.icon} />
-            <span className={styles.label}>{item.label}</span>
+    <>
+      <div
+        className={`${styles.backdrop} ${mobileOpen ? styles.backdropOpen : ''}`}
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <aside
+        id="admin-sidebar"
+        className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''} ${mobileOpen ? styles.open : ''}`}
+        aria-label="Admin navigation"
+      >
+        <div className={styles.logoContainer}>
+          <NavLink to="/" className={styles.logoLink} aria-label="Lotnis admin — dashboard">
+            <BrandMark compact={collapsed} />
           </NavLink>
-        ))}
-      </nav>
-    </aside>
+          <button
+            type="button"
+            className={`${styles.toggleBtn} ${styles.desktopOnly}`}
+            onClick={() => setCollapsed((c) => !c)}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!collapsed}
+          >
+            {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+          </button>
+          <button
+            type="button"
+            className={`${styles.toggleBtn} ${styles.mobileOnly}`}
+            onClick={onClose}
+            aria-label="Close menu"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        <nav className={styles.nav}>
+          {navGroups.map((group) => (
+            <div key={group.label ?? 'top'} className={styles.group}>
+              {group.label && <span className={styles.groupLabel}>{group.label}</span>}
+              {group.items.map((item) => link(item))}
+            </div>
+          ))}
+          <div className={styles.group}>
+            <span className={styles.groupLabel}>Coming soon</span>
+            {upcomingItems.map((item) => link(item, styles.upcoming))}
+          </div>
+        </nav>
+      </aside>
+    </>
   );
 }

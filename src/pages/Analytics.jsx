@@ -34,7 +34,7 @@ export default function Analytics() {
   if (overview.error)
     return (
       <Page>
-        <ErrorState>{overview.error}</ErrorState>
+        <ErrorState onRetry={overview.reload}>{overview.error}</ErrorState>
       </Page>
     );
   const { chart, totals, money: m } = overview.data;

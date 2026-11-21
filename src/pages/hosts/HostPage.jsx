@@ -58,6 +58,7 @@ export default function HostPage() {
     host,
     properties,
     events,
+    services = [],
     bookings_received: bookings,
     money: m,
     reports_about: reports,
@@ -210,6 +211,22 @@ export default function HostPage() {
                     </>
                   ),
                 },
+              ]}
+            />
+          </Card>
+          <Card title="Services" flush>
+            <DataTable
+              rows={services}
+              rowTo={(v) => `/services/${v.id}`}
+              empty="No services."
+              columns={[
+                { key: 't', label: 'Service', render: (v) => <CellMain title={v.title} sub={v.category?.name} /> },
+                {
+                  key: 'r',
+                  label: 'Rate',
+                  render: (v) => `${money(v.currency, v.rate)} / ${v.pricing_unit.replace('per_', '')}`,
+                },
+                { key: 's', label: 'Status', render: (v) => <StatusPill status={v.status} /> },
               ]}
             />
           </Card>

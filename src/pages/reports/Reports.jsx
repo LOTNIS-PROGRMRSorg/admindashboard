@@ -58,7 +58,7 @@ export default function Reports() {
         title="Reports"
         subtitle="Anything people flag: listings and events that look fake, stays that weren't as described, ticket problems and hosts. Reports from the general public are seen by admins only. If the person actually booked or bought, the host sees it too and can reply."
       />
-      {summary.error && <ErrorState>{summary.error}</ErrorState>}
+      {summary.error && <ErrorState onRetry={summary.reload}>{summary.error}</ErrorState>}
       {s && (
         <StatGrid>
           <StatTile
@@ -121,7 +121,7 @@ export default function Reports() {
         {list.loading ? (
           <LoadingState />
         ) : list.error ? (
-          <ErrorState>{list.error}</ErrorState>
+          <ErrorState onRetry={list.reload}>{list.error}</ErrorState>
         ) : (
           <DataTable
             rows={list.data?.data ?? []}

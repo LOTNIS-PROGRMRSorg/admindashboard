@@ -19,6 +19,18 @@ export function LoadingState({ children = 'Loading…' }) {
     </div>
   );
 }
-export function ErrorState({ children }) {
-  return <Notice tone="danger">{children}</Notice>;
+/** An error message; pass `onRetry` (e.g. useApi's `reload`) to offer a Try again button. */
+export function ErrorState({ children, onRetry }) {
+  return (
+    <Notice tone="danger">
+      <span className={styles.errorRow}>
+        <span>{children}</span>
+        {onRetry && (
+          <button type="button" className={styles.retry} onClick={onRetry}>
+            Try again
+          </button>
+        )}
+      </span>
+    </Notice>
+  );
 }

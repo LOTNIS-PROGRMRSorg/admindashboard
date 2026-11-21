@@ -89,7 +89,13 @@ export async function apiFetch(path, options = {}, retried = false) {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
-  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  let response;
+  try {
+    response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  } catch {
+    // fetch only rejects when the request never got an answer (offline, server down, CORS).
+    throw new Error("Couldn't reach the Lotnis server. Check your connection and try again.");
+  }
   const isJson = response.headers.get('content-type')?.includes('application/json');
   const body = isJson ? await response.json().catch(() => null) : null;
 
@@ -99,7 +105,12 @@ export async function apiFetch(path, options = {}, retried = false) {
     throw new Error('Your session has expired. Please sign in again.');
   }
   if (!response.ok) {
-    throw new Error(body?.error || `Request to ${path} failed (${response.status})`);
+    throw new Error(
+      body?.error ||
+        (response.status >= 500
+          ? `Something went wrong on the server (${response.status}). Try again in a moment.`
+          : `That request didn't work (${response.status}).`),
+    );
   }
   return body;
 }

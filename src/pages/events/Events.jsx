@@ -53,7 +53,7 @@ export default function Events() {
         title="Events"
         subtitle="A new host's first event is approved here; trusted hosts publish automatically. Open an event for every sale, scan, vote, refund, report and visit."
       />
-      {summary.error && <ErrorState>{summary.error}</ErrorState>}
+      {summary.error && <ErrorState onRetry={summary.reload}>{summary.error}</ErrorState>}
       <StatGrid>
         <StatTile
           label="Waiting for review"
@@ -107,7 +107,7 @@ export default function Events() {
         {list.loading ? (
           <LoadingState />
         ) : list.error ? (
-          <ErrorState>{list.error}</ErrorState>
+          <ErrorState onRetry={list.reload}>{list.error}</ErrorState>
         ) : (
           <DataTable
             rows={list.data?.data ?? []}

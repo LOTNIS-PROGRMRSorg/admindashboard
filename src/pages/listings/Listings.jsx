@@ -61,7 +61,7 @@ export default function Listings() {
         title="Listings"
         subtitle="Approve new spaces, and open any listing for its host, bookings, visits and reports."
       />
-      {stats.error && <ErrorState>{stats.error}</ErrorState>}
+      {stats.error && <ErrorState onRetry={stats.reload}>{stats.error}</ErrorState>}
       <StatGrid>
         <StatTile
           label="All listings"
@@ -92,7 +92,7 @@ export default function Listings() {
         {list.loading ? (
           <LoadingState />
         ) : list.error ? (
-          <ErrorState>{list.error}</ErrorState>
+          <ErrorState onRetry={list.reload}>{list.error}</ErrorState>
         ) : (
           <DataTable
             rows={rows.slice((page - 1) * LIMIT, page * LIMIT)}

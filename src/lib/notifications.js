@@ -12,6 +12,7 @@ const AREA_PATHS = {
   event: '/events',
   report: '/reports',
   payout: '/payouts',
+  service: '/services',
 };
 
 // Notifications open the thing they are about, not just its list.
@@ -21,6 +22,8 @@ export function notificationPath(notification) {
   if (area === 'exit' && d.exit_id) return `/move-outs/${d.exit_id}`;
   if (area === 'report' && d.report_id) return `/reports/${d.report_id}`;
   if (area === 'event' && d.event_id) return `/events/${d.event_id}`;
+  if (area === 'service' && d.request_id) return `/service-jobs/${d.request_id}`;
+  if (area === 'service' && d.service_id) return `/services/${d.service_id}`;
   if (area === 'booking' && d.booking_id) return `/bookings/${d.booking_id}`;
   if (area === 'host' && d.host_user_id) return `/hosts/${d.host_user_id}`;
   if (area === 'refund' && d.refund_id)

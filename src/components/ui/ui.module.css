@@ -252,8 +252,30 @@
   box-shadow: var(--shadow-sm);
   position: relative;
 }
+a.stat {
+  transition:
+    border-color 0.15s var(--ease),
+    box-shadow 0.15s var(--ease);
+}
 a.stat:hover {
   border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+}
+/* Two across on phones: the whole money picture fits on one or two screens. */
+@media (max-width: 640px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-2);
+  }
+  .stat {
+    padding: var(--spacing-3);
+  }
+  .statValue {
+    font-size: 1.125rem;
+  }
+  .statIcon {
+    display: none;
+  }
 }
 .statTop {
   display: flex;
@@ -278,6 +300,8 @@ a.stat:hover {
   font-weight: 700;
   color: var(--color-text-base);
   line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 .statSub {
   font-size: 0.78rem;
@@ -600,4 +624,24 @@ a.stat:hover {
   gap: 8px;
   align-items: center;
   font-size: 0.9rem;
+}
+
+.errorRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2) var(--spacing-4);
+  width: 100%;
+}
+.retry {
+  padding: 4px 10px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-md);
+  color: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.retry:hover {
+  background: color-mix(in srgb, currentColor 8%, transparent);
 }

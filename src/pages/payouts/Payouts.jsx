@@ -54,7 +54,7 @@ export default function Payouts() {
         title="Payouts"
         subtitle={`Hosts are paid after the service is delivered. Stays: ${o?.stay_report_window_hours ?? 48}h after check-in (a guest report pauses it). Tickets and votes: ${o?.event_payout_hold_hours ?? 48}h after the event ends or voting closes. Long stays are paid monthly. Refunds are netted off automatically.`}
       />
-      {overview.error && <ErrorState>{overview.error}</ErrorState>}
+      {overview.error && <ErrorState onRetry={overview.reload}>{overview.error}</ErrorState>}
       <StatGrid>
         <StatTile
           label="Waiting for release"

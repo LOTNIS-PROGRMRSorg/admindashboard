@@ -20,6 +20,11 @@ import Payouts from './pages/payouts/Payouts';
 import PayoutBatchPage from './pages/payouts/PayoutBatchPage';
 import Reports from './pages/reports/Reports';
 import ReportPage from './pages/reports/ReportPage';
+import Services from './pages/services/Services';
+import ServicePage from './pages/services/ServicePage';
+import ServiceRefundPage from './pages/services/ServiceRefundPage';
+import ServiceJobs from './pages/services/ServiceJobs';
+import ServiceJobPage from './pages/services/ServiceJobPage';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Configuration from './pages/Configuration';
@@ -80,6 +85,7 @@ function App() {
 
           {/* Money */}
           <Route path="refunds" element={<Refunds />} />
+          <Route path="refunds/service/:id" element={<ServiceRefundPage />} />
           <Route path="refunds/:service/:id" element={<RefundPage />} />
           <Route path="payouts" element={<Payouts />} />
           <Route path="payouts/batches/:id" element={<PayoutBatchPage />} />
@@ -96,10 +102,10 @@ function App() {
             path="food"
             element={<ComingSoon title="Food" description="Restaurants, vendors and food orders." />}
           />
-          <Route
-            path="services"
-            element={<ComingSoon title="Services" description="Trusted service providers booked through Lotnis." />}
-          />
+          <Route path="services" element={<Services />} />
+          <Route path="services/:id" element={<ServicePage />} />
+          <Route path="service-jobs" element={<ServiceJobs />} />
+          <Route path="service-jobs/:id" element={<ServiceJobPage />} />
         </Route>
       </Routes>
     </Router>

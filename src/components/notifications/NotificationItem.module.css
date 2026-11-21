@@ -12,7 +12,7 @@
   background: var(--color-bg-subtle);
 }
 .unread {
-  background: rgba(79, 70, 229, 0.05);
+  background: var(--color-primary-soft);
 }
 
 .dot {

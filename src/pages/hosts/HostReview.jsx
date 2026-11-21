@@ -97,7 +97,7 @@ export default function HostReview({ hostProfileId }) {
   const reasons = useApi('/admin/hosts/rejection-reasons');
   const byReq = Object.fromEntries((reviews.data ?? []).map((r) => [r.requirement, r]));
   if (full.loading) return <LoadingState />;
-  if (full.error) return <ErrorState>{full.error}</ErrorState>;
+  if (full.error) return <ErrorState onRetry={full.reload}>{full.error}</ErrorState>;
   const host = full.data;
   const business = host.account_type === 'business';
   return (

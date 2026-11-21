@@ -46,7 +46,7 @@ export default function ListingPage() {
     return (
       <Page>
         <PageHeader back={{ to: '/listings', label: 'All listings' }} title="Listing" />
-        <ErrorState>{detail.error}</ErrorState>
+        <ErrorState onRetry={detail.reload}>{detail.error}</ErrorState>
       </Page>
     );
 

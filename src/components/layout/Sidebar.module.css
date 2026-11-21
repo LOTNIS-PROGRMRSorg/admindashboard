@@ -1,15 +1,17 @@
 .sidebar {
   width: var(--sidebar-width);
   height: 100vh;
+  height: 100dvh;
   background-color: var(--color-bg-surface);
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  transition: width var(--transition-base);
+  transition: width 0.2s var(--ease);
   position: sticky;
   top: 0;
   left: 0;
   z-index: 100;
+  flex: none;
 }
 
 .sidebar.collapsed {
@@ -21,66 +23,150 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--spacing-4);
+  gap: var(--spacing-2);
+  padding: 0 var(--spacing-3) 0 var(--spacing-5);
   border-bottom: 1px solid var(--color-border);
+  flex: none;
+}
+.collapsed .logoContainer {
+  flex-direction: column;
+  justify-content: center;
+  height: auto;
+  min-height: var(--navbar-height);
+  padding: var(--spacing-3) 0;
 }
 
-.logo {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-primary);
+.logoLink {
   display: flex;
+  border-radius: var(--radius-md);
+}
+
+/* Same mark as the website header: a rounded "L" tile + lowercase wordmark. */
+.brand {
+  display: inline-flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: 10px;
+}
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.brandText {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.brandText em {
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
 .toggleBtn {
   color: var(--color-text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-1);
-  border-radius: var(--radius-sm);
-  transition: var(--transition-base);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  transition:
+    background-color 0.15s var(--ease),
+    color 0.15s var(--ease);
 }
-
 .toggleBtn:hover {
   background-color: var(--color-bg-subtle);
   color: var(--color-text-base);
 }
+.mobileOnly {
+  display: none;
+}
 
 .nav {
-  padding: var(--spacing-4);
+  padding: var(--spacing-3);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
   flex-grow: 1;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--spacing-2);
+}
+
+.groupLabel {
+  display: block;
+  margin: var(--spacing-4) var(--spacing-3) var(--spacing-1);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+.collapsed .groupLabel {
+  height: 1px;
+  margin: var(--spacing-2) var(--spacing-3);
+  overflow: hidden;
+  color: transparent;
+  background: var(--color-border);
 }
 
 .navLink {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--spacing-3);
-  padding: var(--spacing-2) var(--spacing-3);
+  min-height: 38px;
+  padding: 0 var(--spacing-3);
   border-radius: var(--radius-md);
   color: var(--color-text-muted);
+  font-size: 0.875rem;
   font-weight: 500;
-  transition: var(--transition-base);
+  transition:
+    background-color 0.15s var(--ease),
+    color 0.15s var(--ease);
 }
-
 .navLink:hover {
   background-color: var(--color-bg-subtle);
   color: var(--color-text-base);
 }
-
+/* Active: a quiet tinted row with a brand bar, instead of a solid block that out-shouts the page. */
 .navLink.active {
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary-ink);
+  font-weight: 600;
 }
-
+.navLink.active::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--color-primary);
+}
 .navLink.active .icon {
-  color: var(--color-text-inverse);
+  color: var(--color-primary);
 }
 
 .icon {
@@ -89,29 +175,18 @@
 
 .label {
   white-space: nowrap;
-  opacity: 1;
-  transition: opacity 0.2s;
 }
 
 .collapsed .label {
-  opacity: 0;
-  width: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
+  clip-path: inset(50%);
 }
-
 .collapsed .navLink {
   justify-content: center;
-  padding: var(--spacing-2);
-}
-
-.groupLabel {
-  display: block;
-  margin: var(--spacing-5) var(--spacing-3) var(--spacing-2);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  padding: 0;
 }
 
 .upcoming {
@@ -121,9 +196,78 @@
   opacity: 1;
 }
 
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-bottom: var(--spacing-2);
+.backdrop {
+  display: none;
+}
+
+/* ── Tablet & phone: off-canvas drawer ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar,
+  .sidebar.collapsed {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(300px, 86vw);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(-102%);
+    visibility: hidden;
+    transition:
+      transform 0.28s var(--ease),
+      visibility 0s linear 0.28s;
+    z-index: 300;
+  }
+  .sidebar.open {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.28s var(--ease);
+  }
+  /* The drawer always shows full labels, whatever the desktop collapse setting. */
+  .collapsed .label {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+  }
+  .collapsed .navLink {
+    justify-content: flex-start;
+    padding: 0 var(--spacing-3);
+  }
+  .collapsed .groupLabel {
+    height: auto;
+    margin: var(--spacing-4) var(--spacing-3) var(--spacing-1);
+    color: var(--color-text-muted);
+    background: none;
+  }
+  .collapsed .logoContainer {
+    flex-direction: row;
+    justify-content: space-between;
+    height: var(--navbar-height);
+    padding: 0 var(--spacing-3) 0 var(--spacing-5);
+  }
+  .desktopOnly {
+    display: none;
+  }
+  .mobileOnly {
+    display: grid;
+  }
+  .backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 290;
+    background: rgb(13 31 28 / 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s var(--ease);
+  }
+  .backdropOpen {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .backdrop {
+    transition: none !important;
+  }
 }
